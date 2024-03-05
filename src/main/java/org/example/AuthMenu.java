@@ -93,14 +93,13 @@ public class AuthMenu {
                 PreparedStatement preparedStatement = DataBase.getInstance().prepareStatement(sql);
 
                 // Установка параметров
-                preparedStatement.setString(1, login); // Устанавливаем значение для параметра с индексом 1
-                preparedStatement.setString(2, hashedPassword); // Устанавливаем значение для параметра с индексом 2
-                preparedStatement.setBoolean(3, true); // Устанавливаем значение для параметра с индексом 3
+                preparedStatement.setString(1, login);
+                preparedStatement.setString(2, hashedPassword);
+                preparedStatement.setBoolean(3, true);
 
                 // Выполнение запроса
                 preparedStatement.executeUpdate();
 
-                // Закрытие PreparedStatement
                 preparedStatement.close();
                 System.out.println("Вы успешно зарегистрировались");
                 AdminMenu adminMenu = new AdminMenu();

@@ -14,9 +14,8 @@ public class Main {
         statement.execute("CREATE DATABASE IF NOT EXISTS restaurant");
         statement.execute("USE restaurant");
         statement.execute("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY AUTO_INCREMENT, login VARCHAR(100), password VARCHAR(300), isAdmin BOOLEAN)");
-        statement.execute("CREATE TABLE IF NOT EXISTS dishes (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), price INT, description VARCHAR(1000), timeToCook BIGINT)");
-        statement.execute("CREATE TABLE IF NOT EXISTS orders (id INT PRIMARY KEY AUTO_INCREMENT, userId INT, dishId INT, FOREIGN KEY (userId) REFERENCES users(id), FOREIGN KEY (dishId) REFERENCES dishes(id))");
-
+        statement.execute("CREATE TABLE IF NOT EXISTS dishes (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), price INT, description VARCHAR(1000), timeToCook BIGINT, quantity INT)");
+        statement.execute("CREATE TABLE IF NOT EXISTS orders (id INT PRIMARY KEY AUTO_INCREMENT, visitorId INT, status VARCHAR(100))");
 
         AuthMenu authMenu = new AuthMenu();
         authMenu.run();

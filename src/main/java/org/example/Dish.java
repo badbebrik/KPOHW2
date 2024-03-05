@@ -13,19 +13,21 @@ public class Dish {
     private long timeToCook;
     private int quantity;
 
-    public Dish(int id, String name, int price, String description, long timeToCook) {
+    public Dish(int id, String name, int price, String description, long timeToCook, int quantity) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.timeToCook = timeToCook;
+        this.quantity = quantity;
     }
 
-    public Dish(String name, int price, String description, long timeToCook) {
+    public Dish(String name, int price, String description, long timeToCook, int quantity) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.timeToCook = timeToCook;
+        this.quantity = quantity;
     }
 
 }

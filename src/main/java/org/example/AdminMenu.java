@@ -51,15 +51,20 @@ public class AdminMenu {
         String description = Main.scanner.nextLine();
         System.out.println("Введите время приготовления:");
         long timeToCook = Main.scanner.nextLong();
+        System.out.println("Введите количество:");
+        int quantity = Main.scanner.nextInt();
+
         Main.scanner.nextLine();
+
 
         try {
             DataBase.getInstance().createStatement().execute("USE restaurant");
-            PreparedStatement ps = DataBase.getInstance().prepareStatement("INSERT INTO dishes (name, price, description, timeToCook) VALUES (?, ?, ?, ?)");
+            PreparedStatement ps = DataBase.getInstance().prepareStatement("INSERT INTO dishes (name, price, description, timeToCook, quantity) VALUES (?, ?, ?, ?, ?)");
             ps.setString(1, name);
             ps.setInt(2, price);
             ps.setString(3, description);
             ps.setLong(4, timeToCook);
+            ps.setInt(5, quantity);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,6 +98,9 @@ public class AdminMenu {
         System.out.println("Введите новое время приготовления:");
         long timeToCook = Main.scanner.nextLong();
         Main.scanner.nextLine();
+        System.out.println("Введите новое количество:");
+        int quantity = Main.scanner.nextInt();
+        Main.scanner.nextLine();
         try {
             DataBase.getInstance().createStatement().execute("USE restaurant");
             PreparedStatement ps = DataBase.getInstance().prepareStatement("UPDATE dishes SET name = ?, price = ?, description = ?, timeToCook = ? WHERE id = ?");
@@ -108,14 +116,15 @@ public class AdminMenu {
     }
 
     private void showDishes() {
+        System.out.println("Меню ресторана: ");
         try {
             DataBase.getInstance().createStatement().execute("USE restaurant");
             var resultSet = DataBase.getInstance().createStatement().executeQuery("SELECT * FROM dishes");
             while (resultSet.next()) {
-                System.out.println(resultSet.getInt("id") + " " + resultSet.getString("name") + " " + resultSet.getInt("price") + " " + resultSet.getString("description") + " " + resultSet.getLong("timeToCook"));
+                System.out.println(resultSet.getInt("id") + " " + resultSet.getString("name") + " " + resultSet.getInt("price") + " " + resultSet.getString("description") + " " + resultSet.getLong("timeToCook") + " " + resultSet.getInt("quantity"));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

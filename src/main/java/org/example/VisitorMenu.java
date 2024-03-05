@@ -10,6 +10,7 @@ public class VisitorMenu {
     @Setter
     @Getter
     private Visitor currentVisitor = null;
+    private Order activeOrder = null;
 
 
     private void showMenu() {
@@ -35,7 +36,7 @@ public class VisitorMenu {
                     showDishes();
                     break;
                 case 3:
-//                    addDishToActiveOrder();
+                    addDishToActiveOrder();
                     break;
                 case 4:
 //                    showActiveOrdersStatus();
@@ -67,5 +68,9 @@ public class VisitorMenu {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    private void addDishToActiveOrder() {
+
     }
 }

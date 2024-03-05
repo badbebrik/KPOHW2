@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 // Singleton
 public class DataBase {
-    private static volatile Connection connection; // Добавляем volatile для корректной работы double-checked locking
+    private static volatile Connection connection = null; // Добавляем volatile для корректной работы double-checked locking
 
     private DataBase() {
     } // Приватный конструктор, чтобы предотвратить создание экземпляров извне
