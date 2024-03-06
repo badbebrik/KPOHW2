@@ -1,10 +1,15 @@
-package org.example;
+package org.example.model;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Data
 public class Order {
     private int id;
     private OrderStatus status;
+
     List<Dish> dishes;
 
     public Order() {
@@ -12,10 +17,8 @@ public class Order {
         status = OrderStatus.NEW;
     }
 
-    public void addDish(Dish dish, int quantity) {
-        for (int i = 0; i < quantity; i++) {
-            dishes.add(dish);
-        }
+    public void addDish(Dish dish) {
+        dishes.add(dish);
     }
 
     public void removeDish(Dish dish) {
