@@ -24,7 +24,9 @@ public class Main {
         ConsoleView consoleView = new ConsoleView();
         DishesMenu dishesMenu = new DishesMenu();
         Kitchen kitchen = new Kitchen(3);
-        AuthMenu authMenu = new AuthMenu(consoleView, dishesMenu, kitchen);
+        OrderRepo orderRepo = new OrderRepo();
+        AuthMenu authMenu = new AuthMenu(consoleView, dishesMenu, kitchen, orderRepo);
         authMenu.run();
+        kitchen.shutdown();
     }
 }

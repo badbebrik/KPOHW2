@@ -5,6 +5,8 @@ import org.example.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 import java.util.List;
 
 // Singleton
@@ -109,10 +111,19 @@ public class DataBaseHandler {
     }
 
 
-    public static void increaseDishQuantity(int id, int quantity) {
-        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE dishes SET quantity = quantity + ? WHERE id = ?")) {
+    public static void setDishQuantity(int id, int quantity) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE dishes SET quantity = ? WHERE id = ?")) {
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void increaseDishQuantity(int id) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE dishes SET quantity = quantity + 1 WHERE id = ?")) {
+            preparedStatement.setInt(1, id);
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -144,10 +155,15 @@ public class DataBaseHandler {
         try (Statement statement = getConnectionInstance().createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM orders");
             while (resultSet.next()) {
+                String dishesJson = resultSet.getString("dishes");
+                Gson gson = new Gson();
+                Type dishListType = new TypeToken<List<Dish>>() {}.getType();
+                List<Dish> dishes = gson.fromJson(dishesJson, dishListType);
+
                 orders.add(Order.builder()
                         .id(resultSet.getInt("id"))
                         .userId(resultSet.getInt("userId"))
-                        .dishes(new Gson().fromJson(resultSet.getString("dishes"), List.class))
+                        .dishes(dishes)
                         .status(OrderStatus.valueOf(resultSet.getString("status")))
                         .build());
             }
@@ -162,6 +178,15 @@ public class DataBaseHandler {
             preparedStatement.setString(1, new Gson().toJson(activeOrder.getDishes()));
             preparedStatement.setString(2, activeOrder.getStatus().toString());
             preparedStatement.setInt(3, activeOrder.getId());
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void removeOrder(Order order) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("DELETE FROM orders WHERE id = ?")) {
+            preparedStatement.setInt(1, order.getId());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();

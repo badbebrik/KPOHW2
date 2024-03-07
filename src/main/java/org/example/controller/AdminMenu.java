@@ -4,6 +4,7 @@ import lombok.Setter;
 import org.example.DishesMenu;
 import org.example.Main;
 import org.example.MenuI;
+import org.example.OrderRepo;
 import org.example.model.Dish;
 import org.example.model.User;
 import org.example.view.ConsoleView;
@@ -15,10 +16,13 @@ public class AdminMenu implements MenuI {
     private DishesMenu dishesMenu;
     private final ConsoleView view;
 
-    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
+    private OrderRepo orderRepo;
+
+    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.currentUser = user;
+        this.orderRepo = orderRepo;
     }
 
     @Override
@@ -83,7 +87,6 @@ public class AdminMenu implements MenuI {
         int id = Main.scanner.nextInt();
         System.out.println("Введите количество:");
         int quantity = Main.scanner.nextInt();
-        dishesMenu.increaseDishQuantity(id, quantity);
+        dishesMenu.setDishQuantity(id, quantity);
     }
-
 }

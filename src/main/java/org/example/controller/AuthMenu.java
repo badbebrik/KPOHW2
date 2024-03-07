@@ -13,12 +13,15 @@ public class AuthMenu {
     DishesMenu dishesMenu;
     Kitchen kitchen;
 
+    OrderRepo orderRepo;
+
     private final ConsoleView view;
 
-    public AuthMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
+    public AuthMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
+        this.orderRepo = orderRepo;
     }
 
     // Хэширование пароля методом SHA-512
@@ -44,7 +47,7 @@ public class AuthMenu {
     }
 
     public void run() {
-        while (currentUser == null) {
+        while (true) {
             showMenu();
             int choice = Main.scanner.nextInt();
             Main.scanner.nextLine();
@@ -68,8 +71,8 @@ public class AuthMenu {
         User user = DataBaseHandler.getUser(username);
         if (user != null && user.getPassword().equals(hashPassword(password))) {
             currentUser = user;
-            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen) : new VisitorMenu(currentUser,
-                    view, dishesMenu, kitchen);
+            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo) : new VisitorMenu(currentUser,
+                    view, dishesMenu, kitchen, orderRepo);
             menu.run();
         } else {
             System.out.println("Неверное имя пользователя или пароль");
@@ -95,7 +98,8 @@ public class AuthMenu {
 
         currentUser = new User(username, hashPassword(password), adminKey.equals("admin") ? UserRole.ADMIN : UserRole.VISITOR);
         DataBaseHandler.addUser(currentUser);
-        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen) : new VisitorMenu(currentUser, view, dishesMenu, kitchen);
+        currentUser = DataBaseHandler.getUser(username);
+        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo) : new VisitorMenu(currentUser, view, dishesMenu, kitchen, orderRepo);
         menu.run();
     }
 

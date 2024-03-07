@@ -2,8 +2,6 @@ package org.example.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.example.controller.OrderIterator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +16,7 @@ public class Order {
     private int id;
     private OrderStatus status;
     private int userId;
+    private boolean isCancelled = false;
 
     List<Dish> dishes;
 
@@ -28,10 +27,6 @@ public class Order {
 
     public void addDish(Dish dish) {
         dishes.add(dish);
-    }
-
-    public Iterator<Dish> iterator() {
-        return new OrderIterator(dishes);
     }
 
 }

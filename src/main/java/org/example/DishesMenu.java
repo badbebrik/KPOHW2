@@ -1,8 +1,6 @@
 package org.example;
 
 import org.example.model.Dish;
-import org.example.model.Order;
-import org.example.model.OrderStatus;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +44,13 @@ public class DishesMenu implements Iterable<Dish> {
         dishes = DataBaseHandler.loadDishes();
     }
 
-    public void increaseDishQuantity(int id, int quantity) {
-        DataBaseHandler.increaseDishQuantity(id, quantity);
+    public void setDishQuantity(int id, int quantity) {
+        DataBaseHandler.setDishQuantity(id, quantity);
+        update();
+    }
+
+    public void increaseDishQuantity(int id) {
+        DataBaseHandler.increaseDishQuantity(id);
         update();
     }
 
@@ -55,22 +58,11 @@ public class DishesMenu implements Iterable<Dish> {
         return dishes.stream().filter(dish -> dish.getId() == id).findFirst().orElse(null);
     }
 
+
+
     public void decreaseDishQuantity(int id) {
         DataBaseHandler.decreaseDishQuantity(id);
         update();
-    }
-
-    public void addOrder(Order activeOrder) {
-        DataBaseHandler.addOrder(activeOrder);
-    }
-
-    public void updateOrder(Order activeOrder) {
-        DataBaseHandler.updateOrder(activeOrder);
-    }
-
-    public Order getActiveOrderByUserId(int id) {
-        return DataBaseHandler.loadOrders().stream().filter(order -> order.getUserId() == id)
-                .filter(order -> order.getStatus() != OrderStatus.PAID).findFirst().orElse(null);
     }
 
     public void showDishes() {
