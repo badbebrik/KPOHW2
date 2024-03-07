@@ -36,7 +36,7 @@ public class ConsoleView implements View {
         System.out.println("5. Отменить заказ");
         System.out.println("6. Заплатить за заказ");
         System.out.println("7. Сделать заказ");
-        System.out.println("7. Выход");
+        System.out.println("8. Выход");
     }
 
 

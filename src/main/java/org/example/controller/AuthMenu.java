@@ -11,12 +11,14 @@ import java.security.NoSuchAlgorithmException;
 public class AuthMenu {
     static User currentUser = null;
     DishesMenu dishesMenu;
+    Kitchen kitchen;
 
     private final ConsoleView view;
 
-    public AuthMenu(ConsoleView view, DishesMenu dishesMenu) {
+    public AuthMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
         this.view = view;
         this.dishesMenu = dishesMenu;
+        this.kitchen = kitchen;
     }
 
     // Хэширование пароля методом SHA-512
@@ -47,14 +49,11 @@ public class AuthMenu {
             int choice = Main.scanner.nextInt();
             Main.scanner.nextLine();
             switch (choice) {
-                case 1:
-                    login();
-                    break;
-                case 2:
-                    register();
-                    break;
-                case 3:
+                case 1 -> login();
+                case 2 -> register();
+                case 3 -> {
                     return;
+                }
             }
         }
     }
@@ -69,7 +68,7 @@ public class AuthMenu {
         User user = DataBaseHandler.getUser(username);
         if (user != null && user.getPassword().equals(hashPassword(password))) {
             currentUser = user;
-            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(view, dishesMenu) : new VisitorMenu(view, dishesMenu);
+            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(view, dishesMenu, kitchen) : new VisitorMenu(view, dishesMenu, kitchen);
             menu.setCurrentUser(currentUser);
             menu.run();
         } else {
@@ -91,7 +90,7 @@ public class AuthMenu {
 
         currentUser = new User(username, hashPassword(password), adminKey.equals("admin") ? UserRole.ADMIN : UserRole.VISITOR);
         DataBaseHandler.addUser(currentUser);
-        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(view, dishesMenu) : new VisitorMenu(view, dishesMenu);
+        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(view, dishesMenu, kitchen) : new VisitorMenu(view, dishesMenu, kitchen);
         menu.setCurrentUser(currentUser);
         menu.run();
     }

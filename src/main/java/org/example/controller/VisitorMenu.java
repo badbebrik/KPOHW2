@@ -16,13 +16,15 @@ public class VisitorMenu implements MenuI {
     @Getter
     private User currentUser = null;
     private DishesMenu dishesMenu;
+    private Kitchen kitchen;
 
     private Order activeOrder;
     private final ConsoleView view;
 
-    public VisitorMenu(ConsoleView view, DishesMenu dishesMenu) {
+    public VisitorMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
         this.view = view;
         this.dishesMenu = dishesMenu;
+        this.kitchen = kitchen;
     }
 
 
@@ -55,6 +57,11 @@ public class VisitorMenu implements MenuI {
                     payForOrder();
                     break;
                 case 7:
+                    makeOrder();
+                    break;
+                case 8:
+                    AuthMenu authMenu = new AuthMenu(view, dishesMenu, kitchen);
+                    authMenu.run();
                     return;
             }
         }
@@ -64,10 +71,12 @@ public class VisitorMenu implements MenuI {
         System.out.println("Вы создали новый заказ. Добавьте блюда в заказ и оформите его.");
         activeOrder = new Order();
         activeOrder.setStatus(OrderStatus.NEW);
+        activeOrder.setUserId(currentUser.getId());
+        dishesMenu.addOrder(activeOrder);
+        loadOrder();
     }
 
     private void showOrder() {
-        dishesMenu.forEach(dish -> System.out.println(dish.getName() + " " + dish.getPrice()));
         for (int i = 0; i < activeOrder.getDishes().size(); i++) {
             System.out.println(activeOrder.getDishes().get(i).getName() + " " + activeOrder.getDishes().get(i).getPrice());
         }
@@ -86,6 +95,7 @@ public class VisitorMenu implements MenuI {
         if (dishesMenu.getDishById(id) != null && dishesMenu.getDishById(id).getQuantity() > 0) {
             activeOrder.addDish(dishesMenu.getDishById(id));
             dishesMenu.decreaseDishQuantity(id);
+            updateOrder();
         } else {
             System.out.println("Блюда с таким id не существует");
         }
@@ -102,5 +112,23 @@ public class VisitorMenu implements MenuI {
 
     private void payForOrder() {
 
+    }
+
+    private void makeOrder() {
+        if (activeOrder.getStatus() == OrderStatus.NEW) {
+            activeOrder.setStatus(OrderStatus.IN_PROGRESS);
+            updateOrder();
+            kitchen.addOrder(activeOrder);
+        } else {
+            view.showErrorMessage("Невозможно оформить заказ");
+        }
+    }
+
+    private void updateOrder() {
+        dishesMenu.updateOrder(activeOrder);
+    }
+
+    private void loadOrder() {
+        activeOrder = dishesMenu.getActiveOrderByUserId(currentUser.getId());
     }
 }

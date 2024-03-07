@@ -1,8 +1,7 @@
 package org.example;
 
-import org.example.model.Dish;
-import org.example.model.User;
-import org.example.model.UserRole;
+import com.google.gson.Gson;
+import org.example.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -123,6 +122,46 @@ public class DataBaseHandler {
     public static void decreaseDishQuantity(int id) {
         try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE dishes SET quantity = quantity - 1 WHERE id = ?")) {
             preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addOrder(Order order) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("INSERT INTO orders (userId, dishes, status) VALUES (?, ?, ?)")) {
+               preparedStatement.setInt(1, order.getUserId());
+                preparedStatement.setString(2, new Gson().toJson(order.getDishes()));
+                preparedStatement.setString(3, order.getStatus().toString());
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Order> loadOrders() {
+        List<Order> orders = new ArrayList<>();
+        try (Statement statement = getConnectionInstance().createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders");
+            while (resultSet.next()) {
+                orders.add(Order.builder()
+                        .id(resultSet.getInt("id"))
+                        .userId(resultSet.getInt("userId"))
+                        .dishes(new Gson().fromJson(resultSet.getString("dishes"), List.class))
+                        .status(OrderStatus.valueOf(resultSet.getString("status")))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public static void updateOrder(Order activeOrder) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE orders SET dishes = ?, status = ? WHERE id = ?")) {
+            preparedStatement.setString(1, new Gson().toJson(activeOrder.getDishes()));
+            preparedStatement.setString(2, activeOrder.getStatus().toString());
+            preparedStatement.setInt(3, activeOrder.getId());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();

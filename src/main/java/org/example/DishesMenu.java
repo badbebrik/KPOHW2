@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.model.Dish;
+import org.example.model.Order;
 
 import java.util.Iterator;
 import java.util.List;
@@ -61,5 +62,17 @@ public class DishesMenu implements Iterable<Dish> {
     public void decreaseDishQuantity(int id) {
         DataBaseHandler.decreaseDishQuantity(id);
         update();
+    }
+
+    public void addOrder(Order activeOrder) {
+        DataBaseHandler.addOrder(activeOrder);
+    }
+
+    public void updateOrder(Order activeOrder) {
+        DataBaseHandler.updateOrder(activeOrder);
+    }
+
+    public Order getActiveOrderByUserId(int id) {
+        return DataBaseHandler.loadOrders().stream().filter(order -> order.getUserId() == id).findFirst().orElse(null);
     }
 }

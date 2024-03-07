@@ -15,7 +15,7 @@ public class AdminMenu implements MenuI {
     private DishesMenu dishesMenu;
     private final ConsoleView view;
 
-    public AdminMenu(ConsoleView view, DishesMenu dishesMenu) {
+    public AdminMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
         this.view = view;
         this.dishesMenu = dishesMenu;
     }
@@ -32,23 +32,14 @@ public class AdminMenu implements MenuI {
             int choice = Main.scanner.nextInt();
             Main.scanner.nextLine();
             switch (choice) {
-                case 1:
-                    addDish();
-                    break;
-                case 2:
-                    removeDish();
-                    break;
-                case 3:
-                    showDishes();
-                    break;
-                case 4:
-                    showStatistics();
-                    break;
-                case 5:
-                    setDishQuantity();
-                    break;
-                case 6:
+                case 1 -> addDish();
+                case 2 -> removeDish();
+                case 3 -> showDishes();
+                case 4 -> showStatistics();
+                case 5 -> setDishQuantity();
+                case 6 -> {
                     return;
+                }
             }
         }
     }
@@ -86,7 +77,7 @@ public class AdminMenu implements MenuI {
     }
 
     private void setDishQuantity() {
-        System.out.println("Увеличение количества блюда:");
+        System.out.println("Установка количества блюда:");
         System.out.println("Введите id блюда:");
         int id = Main.scanner.nextInt();
         System.out.println("Введите количество:");
