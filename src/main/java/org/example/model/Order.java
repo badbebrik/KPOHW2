@@ -3,8 +3,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.controller.OrderIterator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -26,6 +28,10 @@ public class Order {
 
     public void addDish(Dish dish) {
         dishes.add(dish);
+    }
+
+    public Iterator<Dish> iterator() {
+        return new OrderIterator(dishes);
     }
 
 }

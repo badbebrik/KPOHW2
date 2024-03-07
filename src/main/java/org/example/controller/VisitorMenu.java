@@ -5,10 +5,13 @@ import lombok.Setter;
 import org.example.DishesMenu;
 import org.example.Main;
 import org.example.MenuI;
+import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
 import org.example.model.User;
 import org.example.view.ConsoleView;
+
+import java.util.Iterator;
 
 public class VisitorMenu implements MenuI {
 
@@ -21,10 +24,12 @@ public class VisitorMenu implements MenuI {
     private Order activeOrder;
     private final ConsoleView view;
 
-    public VisitorMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
+    public VisitorMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
+        this.currentUser = user;
+        activeOrder = dishesMenu.getActiveOrderByUserId(currentUser.getId());
     }
 
 
@@ -68,6 +73,24 @@ public class VisitorMenu implements MenuI {
     }
 
     private void createOrder() {
+        if (activeOrder != null && activeOrder.getStatus() != OrderStatus.PAID) {
+
+            if (activeOrder.getStatus() == OrderStatus.NEW) {
+                System.out.println("У вас уже есть новый заказ. Добавьте блюда в заказ и оформите его.");
+                return;
+            }
+
+            if (activeOrder.getStatus() == OrderStatus.DONE) {
+                System.out.println("Вы не оплатили прошлый заказ. Оплатите и создайте новый.");
+                return;
+            }
+
+            if (activeOrder.getStatus() == OrderStatus.IN_PROGRESS) {
+                System.out.println("Ваш заказ уже готовится. Дождитесь его выполнения.");
+                return;
+            }
+        }
+
         System.out.println("Вы создали новый заказ. Добавьте блюда в заказ и оформите его.");
         activeOrder = new Order();
         activeOrder.setStatus(OrderStatus.NEW);
@@ -76,14 +99,25 @@ public class VisitorMenu implements MenuI {
         loadOrder();
     }
 
+    private void showDishes() {
+        dishesMenu.showDishes();
+    }
+
     private void showOrder() {
-        for (int i = 0; i < activeOrder.getDishes().size(); i++) {
-            System.out.println(activeOrder.getDishes().get(i).getName() + " " + activeOrder.getDishes().get(i).getPrice());
+        Iterator<Dish> iterator = activeOrder.iterator();
+        if (!iterator.hasNext()) {
+            System.out.println("Ваш заказ пуст");
+            return;
+        }
+        System.out.println("Ваш заказ:");
+        while (iterator.hasNext()) {
+            Dish dish = iterator.next();
+            System.out.println(dish);
         }
     }
 
     private void addDishToActiveOrder() {
-        showOrder();
+        showDishes();
         if (activeOrder.getStatus() == OrderStatus.DONE) {
             System.out.println("Невозможно добавить блюдо в выполненный заказ.");
             return;
@@ -117,8 +151,7 @@ public class VisitorMenu implements MenuI {
     private void makeOrder() {
         if (activeOrder.getStatus() == OrderStatus.NEW) {
             activeOrder.setStatus(OrderStatus.IN_PROGRESS);
-            updateOrder();
-            kitchen.addOrder(activeOrder);
+            kitchen.addOrder(activeOrder, this::updateOrder);
         } else {
             view.showErrorMessage("Невозможно оформить заказ");
         }

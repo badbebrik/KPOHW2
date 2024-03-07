@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.model.Dish;
 import org.example.model.Order;
+import org.example.model.OrderStatus;
 
 import java.util.Iterator;
 import java.util.List;
@@ -23,11 +24,6 @@ public class DishesMenu implements Iterable<Dish> {
     public void removeDish(int id) {
         DataBaseHandler.removeDish(id);
         update();
-    }
-
-    public List<Dish> getDishes() {
-        update();
-        return dishes;
     }
 
 
@@ -73,6 +69,11 @@ public class DishesMenu implements Iterable<Dish> {
     }
 
     public Order getActiveOrderByUserId(int id) {
-        return DataBaseHandler.loadOrders().stream().filter(order -> order.getUserId() == id).findFirst().orElse(null);
+        return DataBaseHandler.loadOrders().stream().filter(order -> order.getUserId() == id)
+                .filter(order -> order.getStatus() != OrderStatus.PAID).findFirst().orElse(null);
+    }
+
+    public void showDishes() {
+        dishes.forEach(System.out::println);
     }
 }

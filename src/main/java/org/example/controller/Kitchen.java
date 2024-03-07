@@ -8,6 +8,11 @@ import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 public class Kitchen {
     private final ExecutorService chefPool;
     private final LinkedBlockingQueue<Order> orderQueue;
@@ -18,9 +23,10 @@ public class Kitchen {
         startProcessingOrders();
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(Order order, Runnable callback) {
         try {
             orderQueue.put(order);
+            orderQueue.put(new Order()); // Пустой заказ используется для сигнала о завершении обработки заказа
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -31,6 +37,9 @@ public class Kitchen {
             while (true) {
                 try {
                     Order order = orderQueue.take(); // Блокирующая операция - ждем заказа
+                    if (order.getDishes().isEmpty()) {
+                        continue; // Пропускаем пустые заказы
+                    }
                     processOrder(order);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -77,5 +86,8 @@ public class Kitchen {
             Thread.currentThread().interrupt();
         }
     }
-}
 
+    public void removeOrder(Order order) {
+        orderQueue.remove(order);
+    }
+}

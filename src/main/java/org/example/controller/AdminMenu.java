@@ -15,9 +15,10 @@ public class AdminMenu implements MenuI {
     private DishesMenu dishesMenu;
     private final ConsoleView view;
 
-    public AdminMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
+    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen) {
         this.view = view;
         this.dishesMenu = dishesMenu;
+        this.currentUser = user;
     }
 
     @Override

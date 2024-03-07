@@ -68,8 +68,8 @@ public class AuthMenu {
         User user = DataBaseHandler.getUser(username);
         if (user != null && user.getPassword().equals(hashPassword(password))) {
             currentUser = user;
-            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(view, dishesMenu, kitchen) : new VisitorMenu(view, dishesMenu, kitchen);
-            menu.setCurrentUser(currentUser);
+            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen) : new VisitorMenu(currentUser,
+                    view, dishesMenu, kitchen);
             menu.run();
         } else {
             System.out.println("Неверное имя пользователя или пароль");
@@ -85,13 +85,17 @@ public class AuthMenu {
 
         System.out.println("Введите имя пользователя: ");
         String username = Main.scanner.nextLine();
+        if (DataBaseHandler.getUser(username) != null) {
+            System.out.println("Пользователь с таким именем уже существует");
+            return;
+        }
+
         System.out.println("Введите пароль: ");
         String password = Main.scanner.nextLine();
 
         currentUser = new User(username, hashPassword(password), adminKey.equals("admin") ? UserRole.ADMIN : UserRole.VISITOR);
         DataBaseHandler.addUser(currentUser);
-        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(view, dishesMenu, kitchen) : new VisitorMenu(view, dishesMenu, kitchen);
-        menu.setCurrentUser(currentUser);
+        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen) : new VisitorMenu(currentUser, view, dishesMenu, kitchen);
         menu.run();
     }
 
