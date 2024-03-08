@@ -1,10 +1,7 @@
 package org.example.controller;
 
 import lombok.Setter;
-import org.example.DishesMenu;
-import org.example.Main;
-import org.example.MenuI;
-import org.example.OrderRepo;
+import org.example.*;
 import org.example.model.Dish;
 import org.example.model.User;
 import org.example.view.ConsoleView;
@@ -18,11 +15,16 @@ public class AdminMenu implements MenuI {
 
     private OrderRepo orderRepo;
 
-    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo) {
+    private ReviewRepo reviewRepo;
+    private MoneyStorage moneyStorage;
+
+    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.currentUser = user;
         this.orderRepo = orderRepo;
+        this.moneyStorage = moneyStorage;
+        this.reviewRepo = reviewRepo;
     }
 
     @Override
@@ -42,11 +44,21 @@ public class AdminMenu implements MenuI {
                 case 3 -> showDishes();
                 case 4 -> showStatistics();
                 case 5 -> setDishQuantity();
-                case 6 -> {
+                case 6 -> showMoneyStorage();
+                case 7 -> showReviews();
+                case 8 -> {
                     return;
                 }
+                default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 7");
             }
         }
+    }
+
+    private void showMoneyStorage() {
+        System.out.println("Касса:");
+        System.out.println("Наличные: " + moneyStorage.getCash());
+        System.out.println("Безналичные: " + moneyStorage.getNonCash());
+        System.out.println("Всего: " + moneyStorage.getTotalMoney());
     }
 
     private void addDish() {
@@ -64,6 +76,10 @@ public class AdminMenu implements MenuI {
 
         Dish dish = new Dish(name, description, price, quantity, cookingTime);
         dishesMenu.addDish(dish);
+    }
+
+    public void showReviews() {
+        System.out.println("Отзывы:");
     }
 
     private void removeDish() {

@@ -192,4 +192,70 @@ public class DataBaseHandler {
             e.printStackTrace();
         }
     }
+
+    // Получение данных о наличке из базы
+    public static int getCash() {
+        try (Statement statement = getConnectionInstance().createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM moneyStorage");
+            if (resultSet.next()) {
+                return resultSet.getInt("cash");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();}
+        return 0;
+    }
+
+    // Получение данных о безналичных средствах из базы
+    public static int getNonCash() {
+        try (Statement statement = getConnectionInstance().createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM moneyStorage");
+            if (resultSet.next()) {
+                return resultSet.getInt("nonCash");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        setInitialMoneyStorage();
+        return 0;
+    }
+
+    private static void setInitialMoneyStorage() {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("INSERT INTO moneyStorage (cash, nonCash, total) VALUES (?, ?, ?)")) {
+            preparedStatement.setInt(1, 0);
+            preparedStatement.setInt(2, 0);
+            preparedStatement.setInt(3, 0);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Для внесения изменений в кассу в базе
+    public static void updateMoneyStorage(MoneyStorage moneyStorage) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE moneyStorage SET cash = ?, nonCash = ?, total = cash + nonCash")) {
+            preparedStatement.setInt(1, moneyStorage.getCash());
+            preparedStatement.setInt(2, moneyStorage.getNonCash());
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Для восстановления данных об отзывах из базы
+    public static List<Review> loadReviews() {
+        List<Review> reviews = new ArrayList<>();
+        try (Statement statement = getConnectionInstance().createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM reviews");
+            while (resultSet.next()) {
+                reviews.add(Review.builder()
+                        .id(resultSet.getInt("id"))
+                        .review(resultSet.getString("review"))
+                        .orderId(resultSet.getInt("orderId"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return reviews;
+    }
 }

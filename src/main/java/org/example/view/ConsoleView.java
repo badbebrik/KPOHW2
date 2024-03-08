@@ -24,7 +24,9 @@ public class ConsoleView implements View {
         System.out.println("3. Показать меню");
         System.out.println("4. Статистика");
         System.out.println("5. Увеличить количество блюдa");
-        System.out.println("6. Выход");
+        System.out.println("6. Показать кассу");
+        System.out.println("7. Показать отзывы");
+        System.out.println("8. Выход");
     }
 
     @Override

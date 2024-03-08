@@ -1,7 +1,5 @@
 package org.example.controller;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.example.model.Dish;
@@ -80,9 +78,5 @@ public class Kitchen {
             chefPool.shutdownNow();
             Thread.currentThread().interrupt();
         }
-    }
-
-    public void removeOrder(Order order) {
-        orderQueue.remove(order);
     }
 }

@@ -24,7 +24,6 @@ public class DishesMenu implements Iterable<Dish> {
         update();
     }
 
-
     @Override
     public Iterator<Dish> iterator() {
         return dishes.iterator();
@@ -57,8 +56,6 @@ public class DishesMenu implements Iterable<Dish> {
     public Dish getDishById(int id) {
         return dishes.stream().filter(dish -> dish.getId() == id).findFirst().orElse(null);
     }
-
-
 
     public void decreaseDishQuantity(int id) {
         DataBaseHandler.decreaseDishQuantity(id);

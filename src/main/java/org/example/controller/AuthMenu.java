@@ -12,19 +12,21 @@ public class AuthMenu {
     static User currentUser = null;
     DishesMenu dishesMenu;
     Kitchen kitchen;
-
     OrderRepo orderRepo;
+    MoneyStorage moneyStorage;
+
+    ReviewRepo reviewRepo;
 
     private final ConsoleView view;
 
-    public AuthMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo) {
+    public AuthMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
         this.orderRepo = orderRepo;
+        this.moneyStorage = moneyStorage;
     }
 
-    // Хэширование пароля методом SHA-512
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
@@ -71,8 +73,8 @@ public class AuthMenu {
         User user = DataBaseHandler.getUser(username);
         if (user != null && user.getPassword().equals(hashPassword(password))) {
             currentUser = user;
-            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo) : new VisitorMenu(currentUser,
-                    view, dishesMenu, kitchen, orderRepo);
+            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo) : new VisitorMenu(currentUser,
+                    view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
             menu.run();
         } else {
             System.out.println("Неверное имя пользователя или пароль");
@@ -99,8 +101,7 @@ public class AuthMenu {
         currentUser = new User(username, hashPassword(password), adminKey.equals("admin") ? UserRole.ADMIN : UserRole.VISITOR);
         DataBaseHandler.addUser(currentUser);
         currentUser = DataBaseHandler.getUser(username);
-        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo) : new VisitorMenu(currentUser, view, dishesMenu, kitchen, orderRepo);
+        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo) : new VisitorMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
         menu.run();
     }
-
 }

@@ -13,6 +13,7 @@ public class Dish {
     private String description;
     private long timeToCook;
     private int quantity;
+    private double rating;
 
     public Dish(String name, String description, int price, int quantity, long cookingTime) {
         this.name = name;

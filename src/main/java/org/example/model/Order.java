@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -29,4 +28,11 @@ public class Order {
         dishes.add(dish);
     }
 
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (Dish dish : dishes) {
+            totalPrice += dish.getPrice();
+        }
+        return totalPrice;
+    }
 }

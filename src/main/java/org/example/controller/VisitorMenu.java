@@ -2,10 +2,7 @@ package org.example.controller;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.DishesMenu;
-import org.example.Main;
-import org.example.MenuI;
-import org.example.OrderRepo;
+import org.example.*;
 import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
@@ -23,14 +20,21 @@ public class VisitorMenu implements MenuI {
     private Order activeOrder;
     private final ConsoleView view;
 
+    private MoneyStorage moneyStorage;
 
-    public VisitorMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo) {
+
+    private ReviewRepo reviewRepo;
+
+
+    public VisitorMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
         this.currentUser = user;
         this.orderRepo = orderRepo;
         activeOrder = orderRepo.getActiveOrderByUserId(currentUser.getId());
+        this.moneyStorage = moneyStorage;
+        this.reviewRepo = reviewRepo;
     }
 
 
@@ -67,6 +71,8 @@ public class VisitorMenu implements MenuI {
                     break;
                 case 8:
                     return;
+                default:
+                    view.showErrorMessage("Некорректный ввод. Введите число от 1 до 8");
             }
         }
     }
@@ -106,9 +112,15 @@ public class VisitorMenu implements MenuI {
             System.out.println("У вас нет активных заказов");
             return;
         }
+
+        if (activeOrder.getDishes().isEmpty()) {
+            System.out.println("Ваш заказ пуст");
+            return;
+        }
+
         System.out.println("Ваш заказ:");
         for (Dish dish : activeOrder.getDishes()) {
-            System.out.println(dish);
+            System.out.println("Блюдо: " + dish.getName() + " Цена: " + dish.getPrice() + " Время приготовления: " + dish.getTimeToCook() + "мин");
         }
     }
 
@@ -118,16 +130,32 @@ public class VisitorMenu implements MenuI {
             return;
         }
 
-        showDishes();
         if (activeOrder.getStatus() == OrderStatus.DONE) {
             System.out.println("Невозможно добавить блюдо в выполненный заказ.");
             return;
         }
+
+        if (activeOrder.getStatus() == OrderStatus.PAID) {
+            System.out.println("Невозможно добавить блюдо в оплаченный заказ.");
+            return;
+        }
+
+        if (activeOrder.getStatus() == OrderStatus.IN_PROGRESS) {
+            System.out.println("Невозможно добавить блюдо в готовящийся заказ.");
+            return;
+        }
+
         System.out.println("Добавление блюда в заказ:");
+        showDishes();
         System.out.println("Введите id блюда:");
         int id = Main.scanner.nextInt();
         Main.scanner.nextLine();
-        if (dishesMenu.getDishById(id) != null && dishesMenu.getDishById(id).getQuantity() > 0) {
+        if (dishesMenu.getDishById(id) != null) {
+            if (dishesMenu.getDishById(id).getQuantity() == 0) {
+                System.out.println("Блюдо закончилось");
+                return;
+            }
+
             activeOrder.addDish(dishesMenu.getDishById(id));
             dishesMenu.decreaseDishQuantity(id);
             updateOrder();
@@ -143,7 +171,15 @@ public class VisitorMenu implements MenuI {
             return;
         }
 
-        System.out.println("Статус заказа: " + activeOrder.getStatus());
+        String status = "";
+        switch (activeOrder.getStatus()) {
+            case NEW -> status = "Создан";
+            case IN_PROGRESS -> status = "Готовится";
+            case DONE -> status = "Выполнен";
+            case PAID -> status = "Оплачен";
+        }
+
+        System.out.println("Статус заказа: " + status);
     }
 
     private void cancelOrder() {
@@ -168,8 +204,9 @@ public class VisitorMenu implements MenuI {
 
         activeOrder.setCancelled(true);
         orderRepo.removeOrder(activeOrder);
-
         activeOrder = null;
+
+        System.out.println("Заказ успешно отменен.");
     }
 
     private void payForOrder() {
@@ -183,17 +220,47 @@ public class VisitorMenu implements MenuI {
             return;
         }
 
-        if (activeOrder.getStatus() == OrderStatus.DONE) {
-            activeOrder.setStatus(OrderStatus.PAID);
+        if (activeOrder.getStatus() == OrderStatus.NEW) {
+            System.out.println("Заказ еще не готов. Оплатите заказ после приготовления.");
+            return;
         }
 
+        if (activeOrder.getStatus() == OrderStatus.DONE) {
+            System.out.println("Ваш чек: ");
+            for (Dish dish : activeOrder.getDishes()) {
+                System.out.println("Блюдо: " + dish.getName() + " Цена: " + dish.getPrice());
+            }
+            System.out.println("Итого: " + activeOrder.getTotalPrice());
+
+            System.out.println("Как вы хотите оплатить заказ?");
+            System.out.println("1. Наличными");
+            System.out.println("2. Картой");
+            int choice = Main.scanner.nextInt();
+            Main.scanner.nextLine();
+            if (choice == 1) {
+                moneyStorage.addCash(activeOrder.getTotalPrice());
+            } else if (choice == 2) {
+                moneyStorage.addNonCash(activeOrder.getTotalPrice());
+            } else {
+                System.out.println("Некорректный ввод");
+                return;
+            }
+        }
+
+        activeOrder.setStatus(OrderStatus.PAID);
+        updateMoneyStorage();
         updateOrder();
+    }
+
+    private void updateMoneyStorage() {
+        moneyStorage.updateMoneyStorage();
     }
 
     private void makeOrder() {
         if (activeOrder.getStatus() == OrderStatus.NEW) {
             activeOrder.setStatus(OrderStatus.IN_PROGRESS);
             updateOrder();
+            System.out.println("Ваш заказ принят в обработку и готовится");
             kitchen.addOrder(activeOrder, this::updateOrder);
         } else {
             view.showErrorMessage("Невозможно оформить заказ");
