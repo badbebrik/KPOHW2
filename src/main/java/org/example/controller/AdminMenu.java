@@ -6,17 +6,19 @@ import org.example.model.Dish;
 import org.example.model.User;
 import org.example.view.ConsoleView;
 
+import java.util.List;
+
 public class AdminMenu implements MenuI {
 
     @Setter
-    private User currentUser = null;
-    private DishesMenu dishesMenu;
+    private User currentUser;
+    private final DishesMenu dishesMenu;
     private final ConsoleView view;
 
-    private OrderRepo orderRepo;
+    private final OrderRepo orderRepo;
 
-    private ReviewRepo reviewRepo;
-    private MoneyStorage moneyStorage;
+    private final ReviewRepo reviewRepo;
+    private final MoneyStorage moneyStorage;
 
     public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
         this.view = view;
@@ -95,7 +97,16 @@ public class AdminMenu implements MenuI {
     }
 
     private void showStatistics() {
+        System.out.println("Статистика:");
+        System.out.println("Количество заказов за весь период: " + orderRepo.getOrders().size());
+        System.out.println("Количество заказов за этот сеанс работы: " + orderRepo.getOrderSessionCounter());
+        System.out.println("Количество отзывов: " + reviewRepo.getReviews().size());
 
+        System.out.println("Статистика по блюдам:");
+        System.out.println("Самые популярные блюда: ");
+        List<Dish> popularDishes = dishesMenu.getMostPopularDish();
+        popularDishes.forEach(dish -> System.out.println(dish.getName() + " - " + dish.getRating()));
+        System.out.println("Средняя оценка блюд: " + dishesMenu.getAverageRating());
     }
 
     private void setDishQuantity() {

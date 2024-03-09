@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.model.Dish;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
@@ -71,4 +72,15 @@ public class DishesMenu implements Iterable<Dish> {
         update();
     }
 
+    public List<Dish> getMostPopularDish() {
+        List<Dish> mostPopularDishes = new ArrayList<>();
+        double maxRating = dishes.stream().mapToDouble(Dish::getRating).max().orElse(0);
+        dishes.stream().filter(dish -> dish.getRating() == maxRating).forEach(mostPopularDishes::add);
+        return mostPopularDishes;
+    }
+
+    public double getAverageRating() {
+        double averageRating = dishes.stream().mapToDouble(Dish::getRating).average().orElse(0);
+        return Math.round(averageRating * 100.0) / 100.0;
+    }
 }

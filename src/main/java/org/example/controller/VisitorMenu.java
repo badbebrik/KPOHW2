@@ -44,7 +44,6 @@ public class VisitorMenu implements MenuI {
 
     public void run() {
         while (true) {
-            loadOrder();
             showMenu();
             int choice = Main.scanner.nextInt();
             Main.scanner.nextLine();
@@ -75,6 +74,7 @@ public class VisitorMenu implements MenuI {
                 default:
                     view.showErrorMessage("Некорректный ввод. Введите число от 1 до 8");
             }
+            loadOrder();
         }
     }
 
@@ -221,8 +221,8 @@ public class VisitorMenu implements MenuI {
             return;
         }
 
-        if (activeOrder.getStatus() == OrderStatus.NEW) {
-            System.out.println("Заказ еще не готов. Оплатите заказ после приготовления.");
+        if (activeOrder.getStatus() == OrderStatus.NEW || activeOrder.getStatus() == OrderStatus.IN_PROGRESS) {
+            System.out.println("Заказ еще не готов. Оплатите заказ после получения.");
             return;
         }
 

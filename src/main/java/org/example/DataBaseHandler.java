@@ -11,17 +11,17 @@ import java.util.List;
 
 // Singleton
 public class DataBaseHandler {
-    private static volatile Connection connection = null; // Добавляем volatile для корректной работы double-checked locking
+    private static volatile Connection connection = null;
 
     private DataBaseHandler() {
-    } // Приватный конструктор, чтобы предотвратить создание экземпляров извне
+    }
 
     public static Connection getConnectionInstance() {
-        if (connection == null) { // Первая проверка на наличие экземпляра для уменьшения накладных расходов
+        if (connection == null) {
             synchronized (DataBaseHandler.class) {
                 if (connection == null) {
                     try {
-                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "2424");
+                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "root_password");
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

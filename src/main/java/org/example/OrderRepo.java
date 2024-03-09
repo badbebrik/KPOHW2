@@ -1,5 +1,6 @@
 package org.example;
 
+import lombok.Getter;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
 import java.util.List;
@@ -7,11 +8,15 @@ import java.util.List;
 public class OrderRepo {
     List<Order> orders;
 
+    @Getter
+    int orderSessionCounter = 0;
+
     public OrderRepo() {
         orders = DataBaseHandler.loadOrders();
     }
 
     public void addOrder(Order activeOrder) {
+        orderSessionCounter++;
         DataBaseHandler.addOrder(activeOrder);
         update();
     }
