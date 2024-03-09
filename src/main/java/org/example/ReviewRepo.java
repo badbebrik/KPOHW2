@@ -13,8 +13,6 @@ public class ReviewRepo {
         reviews = DataBaseHandler.loadReviews();
     }
 
-
-
     public void updateReview(Order activeOrder) {
         DataBaseHandler.updateOrder(activeOrder);
         update();
@@ -22,5 +20,14 @@ public class ReviewRepo {
 
     public void update() {
         reviews = DataBaseHandler.loadReviews();
+    }
+
+    public void addReview(int id, String review, int id1) {
+        DataBaseHandler.saveReview(Review.builder().id(id).review(review).orderId(id1).build());
+        update();
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
     }
 }

@@ -43,6 +43,8 @@ public class DataBaseHandler {
                         .description(resultSet.getString("description"))
                         .timeToCook(resultSet.getLong("timeToCook"))
                         .quantity(resultSet.getInt("quantity"))
+                        .rating(resultSet.getDouble("rating"))
+                        .ratingCount(resultSet.getInt("ratingCount"))
                         .build());
             }
         } catch (SQLException e) {
@@ -60,12 +62,15 @@ public class DataBaseHandler {
     }
 
     public static void saveDish(Dish dish) {
-        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("INSERT INTO dishes (name, price, description, timeToCook, quantity) VALUES (?, ?, ?, ?, ?)")) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, dish.getName());
             preparedStatement.setInt(2, dish.getPrice());
             preparedStatement.setString(3, dish.getDescription());
             preparedStatement.setLong(4, dish.getTimeToCook());
             preparedStatement.setInt(5, dish.getQuantity());
+            preparedStatement.setDouble(6, dish.getRating());
+            preparedStatement.setInt(7, dish.getRatingCount());
+
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -258,5 +263,26 @@ public class DataBaseHandler {
             e.printStackTrace();
     }
         return reviews;
+    }
+
+    public static void saveReview(Review build) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("INSERT INTO reviews (orderId, review) VALUES (?, ?)")) {
+            preparedStatement.setInt(1, build.getOrderId());
+            preparedStatement.setString(2, build.getReview());
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateDishRating(Dish dish) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE dishes SET rating = ?, ratingCount = ? WHERE id = ?")) {
+            preparedStatement.setDouble(1, dish.getRating());
+            preparedStatement.setInt(2, dish.getRatingCount());
+            preparedStatement.setInt(3, dish.getId());
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

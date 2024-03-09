@@ -3,7 +3,7 @@ package org.example;
 import lombok.Data;
 
 @Data
-public class MoneyStorage {
+public class MoneyStorage implements MoneyStorageI {
     private int cash;
     private int nonCash;
     private int totalMoney;

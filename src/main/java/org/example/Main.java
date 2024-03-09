@@ -16,7 +16,7 @@ public class Main {
         statement.execute("CREATE DATABASE IF NOT EXISTS restaurant");
         statement.execute("USE restaurant");
         statement.execute("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY AUTO_INCREMENT, login VARCHAR(100), password VARCHAR(300), isAdmin BOOLEAN)");
-        statement.execute("CREATE TABLE IF NOT EXISTS dishes (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), price INT, description VARCHAR(1000), timeToCook BIGINT, quantity INT)");
+        statement.execute("CREATE TABLE IF NOT EXISTS dishes (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), price INT, description VARCHAR(1000), timeToCook BIGINT, quantity INT, rating DOUBLE, ratingCount INT)");
         statement.execute("CREATE TABLE IF NOT EXISTS orders (id INT PRIMARY KEY AUTO_INCREMENT, userId INT, dishes JSON, status VARCHAR(100))");
         statement.execute("CREATE TABLE IF NOT EXISTS moneyStorage (cash INT, noncash INT, total INT)");
         statement.execute("CREATE TABLE IF NOT EXISTS reviews (id INT PRIMARY KEY AUTO_INCREMENT, orderId INT, review VARCHAR(1000))");

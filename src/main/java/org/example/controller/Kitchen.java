@@ -29,6 +29,14 @@ public class Kitchen {
         orderQueue.add(order);
     }
 
+    public void cancelOrder(Order order) {
+        order.setCancelled(true);
+    }
+
+    public void removeOrder(Order order) {
+        orderQueue.remove(order);
+    }
+
     public void fillOrderQueue() {
         for (Order order : orderRepo.getOrders()) {
             if (order.getStatus() == OrderStatus.IN_PROGRESS) {

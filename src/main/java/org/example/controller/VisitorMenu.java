@@ -44,6 +44,7 @@ public class VisitorMenu implements MenuI {
 
     public void run() {
         while (true) {
+            loadOrder();
             showMenu();
             int choice = Main.scanner.nextInt();
             Main.scanner.nextLine();
@@ -248,7 +249,7 @@ public class VisitorMenu implements MenuI {
 
             System.out.println("Заказ успешно оплачен");
 
-            ReviewService reviewService = new ReviewService(activeOrder, reviewRepo);
+            ReviewService reviewService = new ReviewService(activeOrder, reviewRepo, dishesMenu);
             reviewService.run();
         }
 
@@ -262,6 +263,16 @@ public class VisitorMenu implements MenuI {
     }
 
     private void makeOrder() {
+        if (activeOrder == null) {
+            System.out.println("У вас нет активных заказов");
+            return;
+        }
+
+        if (activeOrder.getDishes().isEmpty()) {
+            System.out.println("Не удалось оформить заказ. Ваш заказ пуст. Добавьте блюда в заказ и повторите попытку.");
+            return;
+        }
+
         if (activeOrder.getStatus() == OrderStatus.NEW) {
             activeOrder.setStatus(OrderStatus.IN_PROGRESS);
             updateOrder();

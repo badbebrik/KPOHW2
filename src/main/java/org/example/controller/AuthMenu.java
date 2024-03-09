@@ -25,6 +25,7 @@ public class AuthMenu {
         this.kitchen = kitchen;
         this.orderRepo = orderRepo;
         this.moneyStorage = moneyStorage;
+        this.reviewRepo = reviewRepo;
     }
 
     private String hashPassword(String password) {

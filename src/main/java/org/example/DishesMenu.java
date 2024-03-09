@@ -39,7 +39,7 @@ public class DishesMenu implements Iterable<Dish> {
         return Iterable.super.spliterator();
     }
 
-    private void update() {
+    public void update() {
         dishes = DataBaseHandler.loadDishes();
     }
 
@@ -65,4 +65,10 @@ public class DishesMenu implements Iterable<Dish> {
     public void showDishes() {
         dishes.forEach(System.out::println);
     }
+
+    public void updateDishRating(Dish dish) {
+        DataBaseHandler.updateDishRating(dish);
+        update();
+    }
+
 }

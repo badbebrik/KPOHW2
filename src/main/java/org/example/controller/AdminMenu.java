@@ -80,6 +80,7 @@ public class AdminMenu implements MenuI {
 
     public void showReviews() {
         System.out.println("Отзывы:");
+        reviewRepo.getReviews().forEach(review -> System.out.println("id заказа: " + review.getOrderId() + ", Отзыв: " + review.getReview()));
     }
 
     private void removeDish() {
