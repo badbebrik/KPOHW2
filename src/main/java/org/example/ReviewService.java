@@ -5,8 +5,10 @@ import org.example.model.Order;
 public class ReviewService {
 
     Order order;
-    public ReviewService(Order order) {
+    ReviewRepo reviewRepo;
+    public ReviewService(Order order, ReviewRepo reviewRepo) {
         this.order = order;
+        this.reviewRepo = reviewRepo;
     }
 
     public void run() {
@@ -14,12 +16,8 @@ public class ReviewService {
         String answer = Main.scanner.nextLine();
         if (answer.equals("да")) {
             System.out.println("Введите отзыв:");
-
             String review = Main.scanner.nextLine();
             for (int i = 0; i < order.getDishes().size(); i++) {
-                System.out.println("Какую оценку вы бы хотели поставить от 1 до 5 для блюда " + order.getDishes().get(i).getName() + "?");
-                int rating = Main.scanner.nextInt();
-
                 Main.scanner.nextLine();
             }
         }

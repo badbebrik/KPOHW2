@@ -63,8 +63,18 @@ public class Kitchen {
             }
             prepareDish(dish);
         }
-        order.setStatus(OrderStatus.DONE);
-        System.out.println("Заказ для пользователя " + order.getUserId() + " готов");
+
+        if (Thread.currentThread().isInterrupted()) {
+            order.setStatus(OrderStatus.IN_PROGRESS);
+        } else {
+            order.setStatus(OrderStatus.DONE);
+            // сделать импорт из бд
+        }
+
+        orderRepo.updateOrder(order);
+        if (order.getStatus() == OrderStatus.DONE) {
+            System.out.println("Заказ для пользователя " + order.getUserId() + " готов");
+        }
     }
 
     private void prepareDish(Dish dish) {

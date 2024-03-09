@@ -245,6 +245,11 @@ public class VisitorMenu implements MenuI {
                 System.out.println("Некорректный ввод");
                 return;
             }
+
+            System.out.println("Заказ успешно оплачен");
+
+            ReviewService reviewService = new ReviewService(activeOrder, reviewRepo);
+            reviewService.run();
         }
 
         activeOrder.setStatus(OrderStatus.PAID);
