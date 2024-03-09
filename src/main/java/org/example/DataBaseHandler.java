@@ -21,7 +21,7 @@ public class DataBaseHandler {
             synchronized (DataBaseHandler.class) {
                 if (connection == null) {
                     try {
-                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "24244650Vas");
+                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "2424");
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -202,6 +202,7 @@ public class DataBaseHandler {
             }
         } catch (SQLException e) {
             e.printStackTrace();}
+        setInitialMoneyStorage();
         return 0;
     }
 

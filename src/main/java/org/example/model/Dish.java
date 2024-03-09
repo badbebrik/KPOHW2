@@ -25,6 +25,6 @@ public class Dish {
 
     @Override
     public String toString() {
-        return "id = " + id + ", Название = " + name + ", Цена = " + price + ", Количество = " + quantity + ", Время приготовления = " + timeToCook / 1000 + " минут";
+        return "id = " + id + ", Название = " + name + ", Цена = " + price + ", Количество = " + quantity + ", Время приготовления = " + timeToCook / 1000 + " секунд, Рейтинг = ";
     }
 }

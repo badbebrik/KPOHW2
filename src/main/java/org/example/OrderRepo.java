@@ -35,4 +35,7 @@ public class OrderRepo {
         update();
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
 }
