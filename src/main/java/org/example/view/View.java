@@ -1,6 +1,8 @@
 package org.example.view;
 
 import org.example.DishesMenu;
+import org.example.MoneyStorage;
+import org.example.StatisticsCalculator;
 import org.example.model.Order;
 
 public interface View {
@@ -17,18 +19,10 @@ public interface View {
 
     void showMenuItems(DishesMenu dishesMenu);
 
-    void showOrderItems(Order order);
 
-    void showOrderSuccess();
+    void showStatistics(StatisticsCalculator statisticsCalculator);
 
-    void showOrderCancel();
+    void showMoneyStorage(MoneyStorage moneyStorage);
 
-    void showOrderDone(String id);
-
-    void showOrderPaid(String id);
-
-    void showPaymentMenu();
-
-    void showStatistics();
-
+    void showMessageColored(String option, String color);
 }

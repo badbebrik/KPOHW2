@@ -6,21 +6,17 @@ import org.example.model.Dish;
 import org.example.model.User;
 import org.example.view.ConsoleView;
 
-import java.util.List;
-
 public class AdminMenu implements MenuI {
 
     @Setter
     private User currentUser;
     private final DishesMenu dishesMenu;
     private final ConsoleView view;
-
     private final OrderRepo orderRepo;
-
     private final ReviewRepo reviewRepo;
     private final MoneyStorage moneyStorage;
 
-    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
+    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.currentUser = user;
@@ -51,70 +47,92 @@ public class AdminMenu implements MenuI {
                 case 8 -> {
                     return;
                 }
-                default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 7");
+                default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 8");
             }
         }
     }
 
     private void showMoneyStorage() {
-        System.out.println("Касса:");
-        System.out.println("Наличные: " + moneyStorage.getCash());
-        System.out.println("Безналичные: " + moneyStorage.getNonCash());
-        System.out.println("Всего: " + moneyStorage.getTotalMoney());
+        view.showMoneyStorage(moneyStorage);
     }
 
     private void addDish() {
-        System.out.println("Добавление нового блюда в меню:");
-        System.out.println("Введите название блюда:");
-        String name = Main.scanner.nextLine();
-        System.out.println("Введите описание блюда:");
-        String description = Main.scanner.nextLine();
-        System.out.println("Введите цену блюда:");
-        int price = Main.scanner.nextInt();
-        System.out.println("Введите количество блюда:");
-        int quantity = Main.scanner.nextInt();
-        System.out.println("Введите время приготовления блюда:");
-        long cookingTime = Main.scanner.nextInt();
+        String name;
+        String description;
+        int price;
+        int quantity;
+        long cookingTime;
 
-        Dish dish = new Dish(name, description, price, quantity, cookingTime);
+        view.showMessageColored("Добавление блюда в меню:", ConsoleColors.ANSI_BLUE);
+        try {
+            System.out.println("Введите название блюда:");
+            name = Main.scanner.nextLine();
+            System.out.println("Введите описание блюда:");
+            description = Main.scanner.nextLine();
+            System.out.println("Введите цену блюда:");
+            price = Main.scanner.nextInt();
+            System.out.println("Введите количество блюда:");
+            quantity = Main.scanner.nextInt();
+            System.out.println("Введите время приготовления блюда:");
+            cookingTime = Main.scanner.nextInt();
+        } catch (Exception e) {
+            view.showErrorMessage("Некорректный ввод");
+            return;
+        }
+
+        Dish dish = Dish.builder()
+                .name(name)
+                .description(description)
+                .price(price)
+                .quantity(quantity)
+                .timeToCook(cookingTime)
+                .build();
+
         dishesMenu.addDish(dish);
+        view.showMessageColored("Блюдо добавлено", ConsoleColors.ANSI_GREEN);
     }
 
     public void showReviews() {
-        System.out.println("Отзывы:");
-        reviewRepo.getReviews().forEach(review -> System.out.println("id заказа: " + review.getOrderId() + ", Отзыв: " + review.getReview()));
+        view.showMessageColored("Отзывы:", ConsoleColors.ANSI_BLUE);
+        reviewRepo.forEach(review -> System.out.println("id заказа: " + review.getOrderId() + ", Отзыв: " + review.getReview()));
     }
 
     private void removeDish() {
-        System.out.println("Удаление блюда из меню:");
+        view.showMessageColored("Удаление блюда из меню:", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите id блюда:");
-        int id = Main.scanner.nextInt();
+        int id;
+        try {
+            id = Main.scanner.nextInt();
+        } catch (Exception e) {
+            view.showErrorMessage("Некорректный ввод");
+            return;
+        }
+
         dishesMenu.removeDish(id);
     }
 
     private void showDishes() {
-        dishesMenu.forEach(dish -> System.out.println(dish.toString()));
+        view.showMenuItems(dishesMenu);
     }
 
     private void showStatistics() {
-        System.out.println("Статистика:");
-        System.out.println("Количество заказов за весь период: " + orderRepo.getOrders().size());
-        System.out.println("Количество заказов за этот сеанс работы: " + orderRepo.getOrderSessionCounter());
-        System.out.println("Количество отзывов: " + reviewRepo.getReviews().size());
-
-        System.out.println("Статистика по блюдам:");
-        System.out.println("Самые популярные блюда: ");
-        List<Dish> popularDishes = dishesMenu.getMostPopularDish();
-        popularDishes.forEach(dish -> System.out.println(dish.getName() + " - " + dish.getRating()));
-        System.out.println("Средняя оценка блюд: " + dishesMenu.getAverageRating());
+        StatisticsCalculator statisticsCalculator = new StatisticsCalculator(orderRepo, reviewRepo, dishesMenu);
+        view.showStatistics(statisticsCalculator);
     }
 
     private void setDishQuantity() {
-        System.out.println("Установка количества блюда:");
+        view.showMessageColored("Изменение количества блюда:", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите id блюда:");
-        int id = Main.scanner.nextInt();
-        System.out.println("Введите количество:");
-        int quantity = Main.scanner.nextInt();
+        int id, quantity;
+        try {
+            id = Main.scanner.nextInt();
+            System.out.println("Введите количество:");
+            quantity = Main.scanner.nextInt();
+        } catch (Exception e) {
+            view.showErrorMessage("Некорректный ввод");
+            return;
+        }
+
         dishesMenu.setDishQuantity(id, quantity);
     }
 }

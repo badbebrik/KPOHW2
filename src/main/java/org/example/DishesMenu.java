@@ -5,8 +5,6 @@ import org.example.model.Dish;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
 public class DishesMenu implements Iterable<Dish> {
     private List<Dish> dishes;
@@ -23,21 +21,6 @@ public class DishesMenu implements Iterable<Dish> {
     public void removeDish(int id) {
         DataBaseHandler.removeDish(id);
         update();
-    }
-
-    @Override
-    public Iterator<Dish> iterator() {
-        return dishes.iterator();
-    }
-
-    @Override
-    public void forEach(Consumer<? super Dish> action) {
-        Iterable.super.forEach(action);
-    }
-
-    @Override
-    public Spliterator<Dish> spliterator() {
-        return Iterable.super.spliterator();
     }
 
     public void update() {
@@ -82,5 +65,24 @@ public class DishesMenu implements Iterable<Dish> {
     public double getAverageRating() {
         double averageRating = dishes.stream().mapToDouble(Dish::getRating).average().orElse(0);
         return Math.round(averageRating * 100.0) / 100.0;
+    }
+
+    @Override
+    public Iterator<Dish> iterator() {
+        return new DishesIterator();
+    }
+
+    private class DishesIterator implements Iterator<Dish> {
+        private int currentIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < dishes.size();
+        }
+
+        @Override
+        public Dish next() {
+            return dishes.get(currentIndex++);
+        }
     }
 }

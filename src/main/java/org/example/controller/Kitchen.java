@@ -12,20 +12,22 @@ import org.example.model.OrderStatus;
 import java.util.concurrent.*;
 
 public class Kitchen {
+
+    private static final int NUMBER_OF_CHEFS = 3;
     private final ThreadPoolExecutor chefPool;
     private final LinkedBlockingQueue<Order> orderQueue;
 
     private final OrderRepo orderRepo;
 
-    public Kitchen(int numberOfChefs, OrderRepo orderRepo) {
+    public Kitchen(OrderRepo orderRepo) {
         this.orderRepo = orderRepo;
         orderQueue = new LinkedBlockingQueue<>();
-        chefPool = new ThreadPoolExecutor(numberOfChefs, numberOfChefs, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+        chefPool = new ThreadPoolExecutor(NUMBER_OF_CHEFS, NUMBER_OF_CHEFS, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
         fillOrderQueue();
         startProcessingOrders();
     }
 
-    public void addOrder(Order order, Runnable callback) {
+    public void addOrder(Order order) {
         orderQueue.add(order);
     }
 
@@ -38,7 +40,7 @@ public class Kitchen {
     }
 
     public void fillOrderQueue() {
-        for (Order order : orderRepo.getOrders()) {
+        for (Order order : orderRepo) {
             if (order.getStatus() == OrderStatus.IN_PROGRESS) {
                 orderQueue.add(order);
             }
@@ -76,10 +78,15 @@ public class Kitchen {
             order.setStatus(OrderStatus.IN_PROGRESS);
         } else {
             order.setStatus(OrderStatus.DONE);
-            // сделать импорт из бд
         }
 
         orderRepo.updateOrder(order);
+        order = orderRepo.getActiveOrderByUserId(order.getUserId());
+
+        if (order == null) {
+            return;
+        }
+
         if (order.getStatus() == OrderStatus.DONE) {
             System.out.println("Заказ для пользователя " + order.getUserId() + " готов");
         }

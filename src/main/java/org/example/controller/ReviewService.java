@@ -1,5 +1,8 @@
-package org.example;
+package org.example.controller;
 
+import org.example.DishesMenu;
+import org.example.Main;
+import org.example.ReviewRepo;
 import org.example.model.Dish;
 import org.example.model.Order;
 
@@ -23,7 +26,15 @@ public class ReviewService {
             String review = Main.scanner.nextLine();
             for (int i = 0; i < order.getDishes().size(); i++) {
                 System.out.println("Оцените блюдо " + order.getDishes().get(i).getName() + " от 1 до 5");
-                int rating = Main.scanner.nextInt();
+                int rating;
+                try {
+                    rating = Main.scanner.nextInt();
+                } catch (Exception e) {
+                    System.out.println("Некорректный ввод. Введите число от 1 до 5");
+                    Main.scanner.nextLine();
+                    i--;
+                    continue;
+                }
                 Main.scanner.nextLine();
                 Dish assessedDish = order.getDishes().get(i);
                 assessedDish.setRating((assessedDish.getRating() * assessedDish.getRatingCount() + rating) / (assessedDish.getRatingCount() + 1));

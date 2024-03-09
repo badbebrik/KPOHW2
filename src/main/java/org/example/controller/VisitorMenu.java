@@ -14,16 +14,16 @@ public class VisitorMenu implements MenuI {
     @Setter
     @Getter
     private User currentUser = null;
-    private DishesMenu dishesMenu;
-    private Kitchen kitchen;
-    private OrderRepo orderRepo;
+    private final DishesMenu dishesMenu;
+    private final Kitchen kitchen;
+    private final OrderRepo orderRepo;
     private Order activeOrder;
     private final ConsoleView view;
 
-    private MoneyStorage moneyStorage;
+    private final MoneyStorage moneyStorage;
 
 
-    private ReviewRepo reviewRepo;
+    private final ReviewRepo reviewRepo;
 
 
     public VisitorMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
@@ -37,7 +37,6 @@ public class VisitorMenu implements MenuI {
         this.reviewRepo = reviewRepo;
     }
 
-
     public void showMenu() {
         view.showVisitorMenu();
     }
@@ -48,33 +47,18 @@ public class VisitorMenu implements MenuI {
             int choice = Main.scanner.nextInt();
             Main.scanner.nextLine();
             switch (choice) {
-                case 1:
-                    createOrder();
-                    break;
-                case 2:
-                    showOrder();
-                    break;
-                case 3:
-                    addDishToActiveOrder();
-                    break;
-                case 4:
-                    showActiveOrdersStatus();
-                    break;
-                case 5:
-                    cancelOrder();
-                    break;
-                case 6:
-                    payForOrder();
-                    break;
-                case 7:
-                    makeOrder();
-                    break;
-                case 8:
+                case 1 -> createOrder();
+                case 2 -> showOrder();
+                case 3 -> addDishToActiveOrder();
+                case 4 -> showActiveOrdersStatus();
+                case 5 -> cancelOrder();
+                case 6 -> payForOrder();
+                case 7 -> makeOrder();
+                case 8 -> {
                     return;
-                default:
-                    view.showErrorMessage("Некорректный ввод. Введите число от 1 до 8");
+                }
+                default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 8");
             }
-            loadOrder();
         }
     }
 
@@ -82,17 +66,17 @@ public class VisitorMenu implements MenuI {
         if (activeOrder != null && activeOrder.getStatus() != OrderStatus.PAID) {
 
             if (activeOrder.getStatus() == OrderStatus.NEW) {
-                System.out.println("У вас уже есть новый заказ. Добавьте блюда в заказ и оформите его.");
+                view.showErrorMessage("У вас уже есть новый заказ. Добавьте блюда в заказ и оформите его.");
                 return;
             }
 
             if (activeOrder.getStatus() == OrderStatus.DONE) {
-                System.out.println("Вы не оплатили прошлый заказ. Оплатите и создайте новый.");
+                view.showErrorMessage("Вы не оплатили прошлый заказ. Оплатите и создайте новый.");
                 return;
             }
 
             if (activeOrder.getStatus() == OrderStatus.IN_PROGRESS) {
-                System.out.println("Ваш заказ уже готовится. Дождитесь его выполнения.");
+                view.showErrorMessage("Ваш заказ уже готовится. Дождитесь его выполнения.");
                 return;
             }
         }
@@ -149,8 +133,14 @@ public class VisitorMenu implements MenuI {
         System.out.println("Добавление блюда в заказ:");
         showDishes();
         System.out.println("Введите id блюда:");
-        int id = Main.scanner.nextInt();
-        Main.scanner.nextLine();
+        int id;
+        try {
+            id = Main.scanner.nextInt();
+        } catch (Exception e) {
+            System.out.println("Некорректный ввод");
+            return;
+        }
+
         if (dishesMenu.getDishById(id) != null) {
             if (dishesMenu.getDishById(id).getQuantity() == 0) {
                 System.out.println("Блюдо закончилось");
@@ -159,7 +149,7 @@ public class VisitorMenu implements MenuI {
 
             activeOrder.addDish(dishesMenu.getDishById(id));
             dishesMenu.decreaseDishQuantity(id);
-            updateOrder();
+            orderRepo.updateOrder(activeOrder);
         } else {
             System.out.println("Блюда с таким id не существует");
         }
@@ -203,11 +193,11 @@ public class VisitorMenu implements MenuI {
             dishesMenu.increaseDishQuantity(dish.getId());
         }
 
-        activeOrder.setCancelled(true);
+        kitchen.cancelOrder(activeOrder);
         orderRepo.removeOrder(activeOrder);
         activeOrder = null;
 
-        System.out.println("Заказ успешно отменен.");
+        view.showMessageColored("Заказ отменен", ConsoleColors.ANSI_ORANGE);
     }
 
     private void payForOrder() {
@@ -255,7 +245,7 @@ public class VisitorMenu implements MenuI {
 
         activeOrder.setStatus(OrderStatus.PAID);
         updateMoneyStorage();
-        updateOrder();
+        orderRepo.updateOrder(activeOrder);
     }
 
     private void updateMoneyStorage() {
@@ -275,16 +265,12 @@ public class VisitorMenu implements MenuI {
 
         if (activeOrder.getStatus() == OrderStatus.NEW) {
             activeOrder.setStatus(OrderStatus.IN_PROGRESS);
-            updateOrder();
+            orderRepo.updateOrder(activeOrder);
             System.out.println("Ваш заказ принят в обработку и готовится");
-            kitchen.addOrder(activeOrder, this::updateOrder);
+            kitchen.addOrder(activeOrder);
         } else {
             view.showErrorMessage("Невозможно оформить заказ");
         }
-    }
-
-    private void updateOrder() {
-        orderRepo.updateOrder(activeOrder);
     }
 
     private void loadOrder() {

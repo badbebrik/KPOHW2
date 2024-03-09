@@ -14,9 +14,7 @@ public class AuthMenu {
     Kitchen kitchen;
     OrderRepo orderRepo;
     MoneyStorage moneyStorage;
-
     ReviewRepo reviewRepo;
-
     private final ConsoleView view;
 
     public AuthMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
@@ -60,6 +58,7 @@ public class AuthMenu {
                 case 3 -> {
                     return;
                 }
+                default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 3");
             }
         }
     }
@@ -74,15 +73,13 @@ public class AuthMenu {
         User user = DataBaseHandler.getUser(username);
         if (user != null && user.getPassword().equals(hashPassword(password))) {
             currentUser = user;
-            MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo) : new VisitorMenu(currentUser,
-                    view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
+            MenuI menu = MenuFactory.createMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
             menu.run();
         } else {
             System.out.println("Неверное имя пользователя или пароль");
         }
 
     }
-
 
     void register() {
         System.out.println("Регистрация пользователя:");
@@ -102,7 +99,7 @@ public class AuthMenu {
         currentUser = new User(username, hashPassword(password), adminKey.equals("admin") ? UserRole.ADMIN : UserRole.VISITOR);
         DataBaseHandler.addUser(currentUser);
         currentUser = DataBaseHandler.getUser(username);
-        MenuI menu = currentUser.getRole() == UserRole.ADMIN ? new AdminMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo) : new VisitorMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
+        MenuI menu = MenuFactory.createMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
         menu.run();
     }
 }

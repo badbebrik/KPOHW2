@@ -5,13 +5,18 @@ import org.example.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.reflect.Type;
 import java.util.List;
 
 // Singleton
 public class DataBaseHandler {
     private static volatile Connection connection = null;
+    private static final String DB_URL = "jdbc:mysql://localhost:3306";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "root_password";
 
     private DataBaseHandler() {
     }
@@ -21,14 +26,27 @@ public class DataBaseHandler {
             synchronized (DataBaseHandler.class) {
                 if (connection == null) {
                     try {
-                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "root_password");
+                        connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Failed to connect to the database", e);
                     }
                 }
             }
         }
         return connection;
+    }
+
+    public static void initialize() throws SQLException {
+        Statement statement;
+        statement = DataBaseHandler.getConnectionInstance().createStatement();
+        statement.execute("CREATE DATABASE IF NOT EXISTS restaurant");
+        statement.execute("USE restaurant");
+        statement.execute("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY AUTO_INCREMENT, login VARCHAR(100), password VARCHAR(300), isAdmin BOOLEAN)");
+        statement.execute("CREATE TABLE IF NOT EXISTS dishes (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), price INT, description VARCHAR(1000), timeToCook BIGINT, quantity INT, rating DOUBLE, ratingCount INT)");
+        statement.execute("CREATE TABLE IF NOT EXISTS orders (id INT PRIMARY KEY AUTO_INCREMENT, userId INT, dishes JSON, status VARCHAR(100))");
+        statement.execute("CREATE TABLE IF NOT EXISTS moneyStorage (cash INT, noncash INT, total INT)");
+        statement.execute("CREATE TABLE IF NOT EXISTS reviews (id INT PRIMARY KEY AUTO_INCREMENT, orderId INT, review VARCHAR(1000))");
+
     }
 
     public static List<Dish> loadDishes() {
@@ -146,9 +164,9 @@ public class DataBaseHandler {
 
     public static void addOrder(Order order) {
         try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("INSERT INTO orders (userId, dishes, status) VALUES (?, ?, ?)")) {
-               preparedStatement.setInt(1, order.getUserId());
-                preparedStatement.setString(2, new Gson().toJson(order.getDishes()));
-                preparedStatement.setString(3, order.getStatus().toString());
+            preparedStatement.setInt(1, order.getUserId());
+            preparedStatement.setString(2, new Gson().toJson(order.getDishes()));
+            preparedStatement.setString(3, order.getStatus().toString());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -162,7 +180,8 @@ public class DataBaseHandler {
             while (resultSet.next()) {
                 String dishesJson = resultSet.getString("dishes");
                 Gson gson = new Gson();
-                Type dishListType = new TypeToken<List<Dish>>() {}.getType();
+                Type dishListType = new TypeToken<List<Dish>>() {
+                }.getType();
                 List<Dish> dishes = gson.fromJson(dishesJson, dishListType);
 
                 orders.add(Order.builder()
@@ -206,7 +225,8 @@ public class DataBaseHandler {
                 return resultSet.getInt("cash");
             }
         } catch (SQLException e) {
-            e.printStackTrace();}
+            e.printStackTrace();
+        }
         setInitialMoneyStorage();
         return 0;
     }
@@ -261,7 +281,7 @@ public class DataBaseHandler {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-    }
+        }
         return reviews;
     }
 

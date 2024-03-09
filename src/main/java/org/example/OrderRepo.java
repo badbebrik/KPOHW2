@@ -3,9 +3,11 @@ package org.example;
 import lombok.Getter;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
+
+import java.util.Iterator;
 import java.util.List;
 
-public class OrderRepo {
+public class OrderRepo implements Iterable<Order> {
     List<Order> orders;
 
     @Getter
@@ -42,5 +44,28 @@ public class OrderRepo {
 
     public List<Order> getOrders() {
         return orders;
+    }
+
+    @Override
+    public Iterator<Order> iterator() {
+        return new OrderIterator();
+    }
+
+    private class OrderIterator implements Iterator<Order> {
+        private int currentIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < orders.size();
+        }
+
+        @Override
+        public Order next() {
+            return orders.get(currentIndex++);
+        }
+    }
+
+    public int getOrderNumber() {
+        return orders.size();
     }
 }
