@@ -277,7 +277,7 @@ public class VisitorMenu implements MenuI {
         if (activeOrder.getStatus() == OrderStatus.NEW) {
             activeOrder.setStatus(OrderStatus.IN_PROGRESS);
             orderRepo.updateOrder(activeOrder);
-            System.out.println("Ваш заказ принят в обработку и готовится");
+            System.out.println("Ваш заказ принят и готовится");
             kitchen.addOrder(activeOrder);
         } else {
             view.showErrorMessage("У вас уже есть оформленный заказ, отмените текущий заказ или создайте новый");

@@ -14,7 +14,7 @@ docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root_password -e MYSQL_DATABASE=m
 После того как в терминале появится сообщение о том, что база данных готова к работе (/usr/sbin/mysqld: ready for connections), можно запускать приложение.
 Если вдруг база данных не запустилась через докер, нужно развернуть ее локально любым другим способом.
 
-Тестовые данные для базы данных:
+Тестовые данные для базы данных (вставлять после первого запуска, когда таблицы создадутся):
 ```sql
 USE restaurant;
 INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount)
