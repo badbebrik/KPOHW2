@@ -1,8 +1,13 @@
 package org.example.view;
 
-import org.example.repository.DishesMenuRepositoryImpl;
-import org.example.repository.MoneyStorageImpl;
+import org.example.model.Dish;
+import org.example.repository.DishesMenuRepository;
+import org.example.repository.MoneyStorage;
 import org.example.service.StatisticsCalculator;
+
+
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class ConsoleView implements View {
 
@@ -54,24 +59,40 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public void showMenuItemsAdmin(DishesMenuRepositoryImpl dishesMenu) {
+    public void showMenuItemsAdmin(DishesMenuRepository dishesMenu) {
         showMessageColored("Меню Ресторана:", ConsoleColors.ANSI_BLUE);
         dishesMenu.forEach(System.out::println);
     }
 
     @Override
-    public void showMenuItemsVisitor(DishesMenuRepositoryImpl dishesMenu) {
+    public void showMenuItemsVisitor(DishesMenuRepository dishesMenu) {
+        DecimalFormat df = new DecimalFormat("#.##");
         showMessageColored("Меню Ресторана:", ConsoleColors.ANSI_BLUE);
-        dishesMenu.forEach(dish -> System.out.println(dish.getId() + ". " +  dish.getName() + " (" + dish.getDescription() + ")" + " - " + dish.getPrice() + " руб." + " - Рейтинг: " + (dish.getRating() != 0 ?dish.getRating() + "/5" : "Нет оценок")));
+        dishesMenu.forEach(dish -> {
+            double rating = dish.getRating();
+            String formattedRating = rating != 0 ? df.format(rating) : "Нет оценок";
+            System.out.println(dish.getId() + ". " +  dish.getName() + " (" + dish.getDescription() + ")" + " - " + dish.getPrice() + " руб." + " - Рейтинг: " + formattedRating + "/5");
+        });
     }
 
     @Override
     public void showStatistics(StatisticsCalculator statisticsCalculator) {
-        statisticsCalculator.showStatistics();
+        DecimalFormat df = new DecimalFormat("#.##"); // Формат с двумя знаками после запятой
+
+        showMessageColored("Статистика:", ConsoleColors.ANSI_BLUE);
+        System.out.println("Количество заказов за весь период: " + statisticsCalculator.getTotalOrderNumber());
+        System.out.println("Количество заказов за этот сеанс работы: " + statisticsCalculator.getTotalOrderSessionCounter());
+        System.out.println("Количество отзывов: " + statisticsCalculator.getTotalReviewNumber());
+
+        System.out.println("Статистика по блюдам:");
+        System.out.println("Самые популярные блюда: ");
+        List<Dish> popularDishes = statisticsCalculator.getMostPopularDish();
+        popularDishes.forEach(dish -> System.out.println(dish.getName() + " - " + df.format(dish.getRating())));
+        System.out.println("Средняя оценка блюд: " + df.format(statisticsCalculator.getAverageRating()));
     }
 
     @Override
-    public void showMoneyStorage(MoneyStorageImpl moneyStorage) {
+    public void showMoneyStorage(MoneyStorage moneyStorage) {
         System.out.println(ConsoleColors.ANSI_BLUE + "Касса:" + ConsoleColors.ANSI_RESET);
         System.out.println("Наличные: " + moneyStorage.getCash());
         System.out.println("Безналичные: " + moneyStorage.getNonCash());

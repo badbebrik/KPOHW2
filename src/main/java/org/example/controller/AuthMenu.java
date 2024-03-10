@@ -4,10 +4,7 @@ import org.example.*;
 import org.example.database.DataBaseHandler;
 import org.example.model.User;
 import org.example.model.UserRole;
-import org.example.repository.DishesMenuRepositoryImpl;
-import org.example.repository.MoneyStorageImpl;
-import org.example.repository.OrderRepositoryImpl;
-import org.example.repository.ReviewRepositoryImpl;
+import org.example.repository.*;
 import org.example.service.Kitchen;
 import org.example.view.ConsoleColors;
 import org.example.view.ConsoleView;
@@ -17,14 +14,14 @@ import java.security.NoSuchAlgorithmException;
 
 public class AuthMenu {
     static User currentUser = null;
-    DishesMenuRepositoryImpl dishesMenu;
+    DishesMenuRepository dishesMenu;
     Kitchen kitchen;
-    OrderRepositoryImpl orderRepo;
-    MoneyStorageImpl moneyStorage;
-    ReviewRepositoryImpl reviewRepo;
+    OrderRepository orderRepo;
+    MoneyStorage moneyStorage;
+    ReviewRepository reviewRepo;
     private final ConsoleView view;
 
-    public AuthMenu(ConsoleView view, DishesMenuRepositoryImpl dishesMenu, Kitchen kitchen, OrderRepositoryImpl orderRepo, MoneyStorageImpl moneyStorage, ReviewRepositoryImpl reviewRepo) {
+    public AuthMenu(ConsoleView view, DishesMenuRepository dishesMenu, Kitchen kitchen, OrderRepository orderRepo, MoneyStorage moneyStorage, ReviewRepository reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
@@ -57,7 +54,16 @@ public class AuthMenu {
     public void run() {
         while (true) {
             showMenu();
-            int choice = Main.scanner.nextInt();
+            int choice;
+            try {
+                choice = Main.scanner.nextInt();
+            }
+            catch (Exception e) {
+                view.showErrorMessage("Некорректный ввод. Введите число от 1 до 3");
+                Main.scanner.nextLine();
+                continue;
+            }
+
             Main.scanner.nextLine();
             switch (choice) {
                 case 1 -> login();

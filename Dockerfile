@@ -1,12 +1,8 @@
-FROM ubuntu:latest
-LABEL authors="vikas"
+FROM mysql:latest
 
-ENTRYPOINT ["top", "-b"]
+ENV MYSQL_ROOT_PASSWORD=root_password
+ENV MYSQL_DATABASE=my_database
+ENV MYSQL_USER=my_user
+ENV MYSQL_PASSWORD=my_password
 
-FROM openjdk:19
-
-WORKDIR /app
-
-COPY target/RestaurantSystemKPO-1.0-SNAPSHOT.jar /app/RestaurantSystemKPO-1.0-SNAPSHOT.jar
-
-CMD ["wait-for-it", "db:3306", "--", "java", "-jar", "RestaurantSystemKPO-1.0-SNAPSHOT.jar"]
+EXPOSE 3306

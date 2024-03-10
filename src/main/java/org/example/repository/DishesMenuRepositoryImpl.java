@@ -37,6 +37,11 @@ public class DishesMenuRepositoryImpl implements Iterable<Dish>, DishesMenuRepos
         update();
     }
 
+    public void setTimeToCook(int id, long time) {
+        DataBaseHandler.setTimeToCook(id, time);
+        update();
+    }
+
     @Override
     public void increaseDishQuantity(int id) {
         DataBaseHandler.increaseDishQuantity(id);
@@ -59,29 +64,9 @@ public class DishesMenuRepositoryImpl implements Iterable<Dish>, DishesMenuRepos
         DataBaseHandler.updateDishRating(dish);
         update();
     }
-
-    @Override
-    public List<Dish> getMostPopularDish() {
-        List<Dish> mostPopularDishes = new ArrayList<>();
-        double maxRating = dishes.stream().mapToDouble(Dish::getRating).max().orElse(0);
-        dishes.stream().filter(dish -> dish.getRating() == maxRating).forEach(mostPopularDishes::add);
-        return mostPopularDishes;
-    }
-
-    @Override
-    public double getAverageRating() {
-        double averageRating = dishes.stream().mapToDouble(Dish::getRating).average().orElse(0);
-        return Math.round(averageRating * 100.0) / 100.0;
-    }
-
     @Override
     public Iterator<Dish> iterator() {
         return new DishesIterator();
-    }
-
-    public void setTimeToCook(int id, long time) {
-        DataBaseHandler.setTimeToCook(id, time);
-        update();
     }
 
     @Override

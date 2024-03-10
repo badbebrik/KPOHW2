@@ -12,7 +12,6 @@ import org.example.repository.MoneyStorageImpl;
 import java.lang.reflect.Type;
 import java.util.List;
 
-// Singleton
 public class DataBaseHandler {
     private static volatile Connection connection = null;
     private static final String DB_URL = "jdbc:mysql://localhost:3306";

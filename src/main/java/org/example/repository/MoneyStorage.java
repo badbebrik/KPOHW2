@@ -8,4 +8,8 @@ public interface MoneyStorage {
     int getTotalMoney();
 
     void updateMoneyStorage();
+
+    int getCash();
+
+    int getNonCash();
 }

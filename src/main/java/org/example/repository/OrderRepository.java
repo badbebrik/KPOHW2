@@ -2,7 +2,9 @@ package org.example.repository;
 
 import org.example.model.Order;
 
-public interface OrderRepository {
+import java.util.Iterator;
+
+public interface OrderRepository extends Iterable<Order> {
     void addOrder(Order order);
 
     int getOrderNumber();
@@ -18,5 +20,7 @@ public interface OrderRepository {
     Order getActiveOrderByUserId(int id);
 
     void updateOrder(Order activeOrder);
+
+    Iterator<Order> iterator();
 
 }

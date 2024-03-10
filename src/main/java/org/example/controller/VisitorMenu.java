@@ -7,11 +7,9 @@ import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
 import org.example.model.User;
-import org.example.repository.DishesMenuRepositoryImpl;
-import org.example.repository.MoneyStorageImpl;
-import org.example.repository.OrderRepositoryImpl;
-import org.example.repository.ReviewRepositoryImpl;
+import org.example.repository.*;
 import org.example.service.Kitchen;
+import org.example.service.ReviewService;
 import org.example.view.ConsoleColors;
 import org.example.view.ConsoleView;
 
@@ -19,20 +17,19 @@ public class VisitorMenu implements MenuI {
 
     @Setter
     @Getter
-    private User currentUser = null;
-    private final DishesMenuRepositoryImpl dishesMenu;
+    private User currentUser;
+    private final DishesMenuRepository dishesMenu;
     private final Kitchen kitchen;
-    private final OrderRepositoryImpl orderRepo;
+    private final OrderRepository orderRepo;
     private Order activeOrder;
     private final ConsoleView view;
-
-    private final MoneyStorageImpl moneyStorage;
-
-
-    private final ReviewRepositoryImpl reviewRepo;
+    private final MoneyStorage moneyStorage;
 
 
-    public VisitorMenu(User user, ConsoleView view, DishesMenuRepositoryImpl dishesMenu, Kitchen kitchen, OrderRepositoryImpl orderRepo, MoneyStorageImpl moneyStorage, ReviewRepositoryImpl reviewRepo) {
+    private final ReviewRepository reviewRepo;
+
+
+    public VisitorMenu(User user, ConsoleView view, DishesMenuRepository dishesMenu, Kitchen kitchen, OrderRepository orderRepo, MoneyStorage moneyStorage, ReviewRepository reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
@@ -44,13 +41,22 @@ public class VisitorMenu implements MenuI {
     }
 
     public void showMenu() {
+        view.showMessageColored("Ваш id: " + currentUser.getId(), ConsoleColors.ANSI_YELLOW);
         view.showVisitorMenu();
     }
 
     public void run() {
         while (true) {
             showMenu();
-            int choice = Main.scanner.nextInt();
+            int choice;
+            try {
+                choice = Main.scanner.nextInt();
+            } catch (Exception e) {
+                view.showErrorMessage("Некорректный ввод");
+                Main.scanner.nextLine();
+                continue;
+            }
+
             Main.scanner.nextLine();
             switch (choice) {
                 case 1 -> createOrder();
@@ -271,7 +277,7 @@ public class VisitorMenu implements MenuI {
             System.out.println("Ваш заказ принят в обработку и готовится");
             kitchen.addOrder(activeOrder);
         } else {
-            view.showErrorMessage("Невозможно оформить заказ");
+            view.showErrorMessage("У вас уже есть оформленный заказ, отмените текущий заказ или создайте новый");
         }
     }
 }

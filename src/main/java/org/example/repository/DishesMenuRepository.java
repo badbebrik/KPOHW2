@@ -4,7 +4,7 @@ import org.example.model.Dish;
 
 import java.util.List;
 
-public interface DishesMenuRepository {
+public interface DishesMenuRepository extends Iterable<Dish> {
     void addDish(Dish dish);
 
     void removeDish(int id);
@@ -22,10 +22,6 @@ public interface DishesMenuRepository {
     void updateDishRating(Dish dish);
 
     Dish getDishById(int id);
-
-    List<Dish> getMostPopularDish();
-
-    double getAverageRating();
 
     void setPrice(int id, int price);
 

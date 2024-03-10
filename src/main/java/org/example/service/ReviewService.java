@@ -1,10 +1,10 @@
-package org.example.controller;
+package org.example.service;
 
 import org.example.model.Review;
+import org.example.repository.DishesMenuRepository;
+import org.example.repository.ReviewRepository;
 import org.example.view.ConsoleColors;
-import org.example.repository.DishesMenuRepositoryImpl;
 import org.example.Main;
-import org.example.repository.ReviewRepositoryImpl;
 import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.view.View;
@@ -12,12 +12,12 @@ import org.example.view.View;
 public class ReviewService {
 
     private final Order order;
-    private final ReviewRepositoryImpl reviewRepo;
-    private final DishesMenuRepositoryImpl dishesMenu;
+    private final ReviewRepository reviewRepo;
+    private final DishesMenuRepository dishesMenu;
 
     private final View view;
 
-    public ReviewService(Order order, ReviewRepositoryImpl reviewRepo, DishesMenuRepositoryImpl dishesMenu, View view) {
+    public ReviewService(Order order, ReviewRepository reviewRepo, DishesMenuRepository dishesMenu, View view) {
         this.order = order;
         this.reviewRepo = reviewRepo;
         this.dishesMenu = dishesMenu;
@@ -35,6 +35,12 @@ public class ReviewService {
                 int rating;
                 try {
                     rating = Main.scanner.nextInt();
+                    if (rating < 1 || rating > 5) {
+                        view.showErrorMessage("Некорректный ввод. Введите число от 1 до 5");
+                        Main.scanner.nextLine();
+                        i--;
+                        continue;
+                    }
                 } catch (Exception e) {
                     view.showErrorMessage("Некорректный ввод. Введите число от 1 до 5");
                     Main.scanner.nextLine();

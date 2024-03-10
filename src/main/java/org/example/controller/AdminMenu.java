@@ -4,11 +4,8 @@ import lombok.Setter;
 import org.example.*;
 import org.example.model.Dish;
 import org.example.model.User;
-import org.example.repository.DishesMenuRepositoryImpl;
-import org.example.repository.MoneyStorageImpl;
-import org.example.repository.OrderRepositoryImpl;
-import org.example.repository.ReviewRepositoryImpl;
-import org.example.service.StatisticsCalculator;
+import org.example.repository.*;
+import org.example.service.StatisticsCalculatorImpl;
 import org.example.view.ConsoleColors;
 import org.example.view.ConsoleView;
 
@@ -16,13 +13,13 @@ public class AdminMenu implements MenuI {
 
     @Setter
     private User currentUser;
-    private final DishesMenuRepositoryImpl dishesMenu;
+    private final DishesMenuRepository dishesMenu;
     private final ConsoleView view;
-    private final OrderRepositoryImpl orderRepo;
-    private final ReviewRepositoryImpl reviewRepo;
-    private final MoneyStorageImpl moneyStorage;
+    private final OrderRepository orderRepo;
+    private final ReviewRepository reviewRepo;
+    private final MoneyStorage moneyStorage;
 
-    public AdminMenu(User user, ConsoleView view, DishesMenuRepositoryImpl dishesMenu, OrderRepositoryImpl orderRepo, MoneyStorageImpl moneyStorage, ReviewRepositoryImpl reviewRepo) {
+    public AdminMenu(User user, ConsoleView view, DishesMenuRepository dishesMenu, OrderRepository orderRepo, MoneyStorage moneyStorage, ReviewRepository reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.currentUser = user;
@@ -33,6 +30,7 @@ public class AdminMenu implements MenuI {
 
     @Override
     public void showMenu() {
+        view.showMessageColored("Ваш id: " + currentUser.getId(), ConsoleColors.ANSI_YELLOW);
         view.showAdminMenu();
     }
 
@@ -40,7 +38,15 @@ public class AdminMenu implements MenuI {
     public void run() {
         while (true) {
             showMenu();
-            int choice = Main.scanner.nextInt();
+            int choice;
+            try {
+                choice = Main.scanner.nextInt();
+            } catch (Exception e) {
+                view.showErrorMessage("Некорректный ввод");
+                Main.scanner.nextLine();
+                continue;
+            }
+
             Main.scanner.nextLine();
             switch (choice) {
                 case 1 -> addDish();
@@ -102,7 +108,7 @@ public class AdminMenu implements MenuI {
 
     public void showReviews() {
         view.showMessageColored("Отзывы:", ConsoleColors.ANSI_BLUE);
-        reviewRepo.forEach(review -> System.out.println("id заказа: " + review.getOrderId() + ", Отзыв: " + review.getReview()));
+        reviewRepo.forEach(review -> System.out.println("Номер заказа: " + review.getOrderId() + " Отзыв: " + review.getReview()));
     }
 
     private void removeDish() {
@@ -124,7 +130,7 @@ public class AdminMenu implements MenuI {
     }
 
     private void showStatistics() {
-        StatisticsCalculator statisticsCalculator = new StatisticsCalculator(orderRepo, reviewRepo, dishesMenu);
+        StatisticsCalculatorImpl statisticsCalculator = new StatisticsCalculatorImpl(orderRepo, reviewRepo, dishesMenu);
         view.showStatistics(statisticsCalculator);
     }
 
@@ -134,8 +140,18 @@ public class AdminMenu implements MenuI {
         int id, quantity;
         try {
             id = Main.scanner.nextInt();
+            if (dishesMenu.getDishById(id) == null) {
+                view.showErrorMessage("Блюда с таким id не существует");
+                return;
+            }
             System.out.println("Введите количество:");
             quantity = Main.scanner.nextInt();
+
+            if (quantity < 0) {
+                view.showErrorMessage("Количество не может быть отрицательным");
+                return;
+            }
+
         } catch (Exception e) {
             view.showErrorMessage("Некорректный ввод");
             return;
@@ -156,8 +172,19 @@ public class AdminMenu implements MenuI {
         long time;
         try {
             id = Main.scanner.nextInt();
+            if (dishesMenu.getDishById(id) == null) {
+                view.showErrorMessage("Блюда с таким id не существует");
+                return;
+            }
+
             System.out.println("Введите время приготовления (в секундах):");
             time = Main.scanner.nextLong();
+
+            if (time < 0) {
+                view.showErrorMessage("Время приготовления не может быть отрицательным");
+                return;
+            }
+
         } catch (Exception e) {
             view.showErrorMessage("Некорректный ввод");
             return;
@@ -178,8 +205,20 @@ public class AdminMenu implements MenuI {
         int id, price;
         try {
             id = Main.scanner.nextInt();
+
+            if (dishesMenu.getDishById(id) == null) {
+                view.showErrorMessage("Блюда с таким id не существует");
+                return;
+            }
+
             System.out.println("Введите цену:");
             price = Main.scanner.nextInt();
+
+            if (price < 0) {
+                view.showErrorMessage("Цена не может быть отрицательной");
+                return;
+            }
+
         } catch (Exception e) {
             view.showErrorMessage("Некорректный ввод");
             return;

@@ -2,11 +2,14 @@ package org.example.repository;
 
 import org.example.model.Review;
 
-public interface ReviewRepository {
+import java.util.Iterator;
+
+public interface ReviewRepository extends Iterable<Review> {
     void addReview(Review review);
 
     int getReviewNumber();
 
     void update();
 
+    Iterator<Review> iterator();
 }
