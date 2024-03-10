@@ -54,6 +54,9 @@ public class StatisticsCalculatorImpl implements StatisticsCalculator {
         double sum = 0;
         int count = 0;
         for (Dish dish : dishesMenu) {
+            if (dish.getRating() == 0) {
+                continue;
+            }
             sum += dish.getRating();
             count++;
         }

@@ -47,6 +47,7 @@ public class VisitorMenu implements MenuI {
 
     public void run() {
         while (true) {
+            activeOrder = orderRepo.getActiveOrderByUserId(currentUser.getId()); // если зазаз был приготовлен во время того как пользователь был не в системе
             showMenu();
             int choice;
             try {
