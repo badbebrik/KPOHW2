@@ -2,8 +2,6 @@ package org.example.repository;
 
 import org.example.model.Dish;
 
-import java.util.List;
-
 public interface DishesMenuRepository extends Iterable<Dish> {
     void addDish(Dish dish);
 

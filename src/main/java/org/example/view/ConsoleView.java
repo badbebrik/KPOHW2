@@ -42,14 +42,15 @@ public class ConsoleView implements View {
     @Override
     public void showVisitorMenu() {
         showMessageColored("Меню посетителя:", ConsoleColors.ANSI_BLUE);
-        System.out.println("1. Создать заказ");
-        System.out.println("2. Посмотреть заказ");
-        System.out.println("3. Добавить блюдо в активный заказ");
-        System.out.println("4. Показать статус заказа");
-        System.out.println("5. Отменить заказ");
-        System.out.println("6. Заплатить за заказ");
-        System.out.println("7. Оформить заказ");
-        System.out.println("8. Выход");
+        System.out.println("1. Показать меню");
+        System.out.println("2. Создать заказ");
+        System.out.println("3. Добавить блюдо в заказ");
+        System.out.println("4. Показать заказ");
+        System.out.println("5. Оформить заказ");
+        System.out.println("6. Показать статус заказа");
+        System.out.println("7. Оплатить заказ");
+        System.out.println("8. Отменить заказ");
+        System.out.println("9. Выход");
     }
 
 
@@ -70,8 +71,8 @@ public class ConsoleView implements View {
         showMessageColored("Меню Ресторана:", ConsoleColors.ANSI_BLUE);
         dishesMenu.forEach(dish -> {
             double rating = dish.getRating();
-            String formattedRating = rating != 0 ? df.format(rating) : "Нет оценок";
-            System.out.println(dish.getId() + ". " +  dish.getName() + " (" + dish.getDescription() + ")" + " - " + dish.getPrice() + " руб." + " - Рейтинг: " + formattedRating + "/5");
+            String formattedRating = rating != 0 ? df.format(rating) + "/5" : "Нет оценок";
+            System.out.println(dish.getId() + ". " +  dish.getName() + " (" + dish.getDescription() + ")" + " - " + dish.getPrice() + " руб." + " - Рейтинг: " + formattedRating);
         });
     }
 

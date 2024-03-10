@@ -2,12 +2,38 @@
 <h2>Серикова Виктория БПИ223</h2>
 
 <h2>Инструкция по запуску</h2>
+Сбилдить докер файл с помощью команды в терминале:
+```bash
+docker build -t my_image_name .
+```
+
 Запустить докер-файл с помощью команды в терминале:
 ```bash
 docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root_password -e MYSQL_DATABASE=my_database -e MYSQL_USER=my_user -e MYSQL_PASSWORD=my_password my_image_name
 ```
 После того как в терминале появится сообщение о том, что база данных готова к работе (/usr/sbin/mysqld: ready for connections), можно запускать приложение.
-Если вдруг база данных не запустилась через докер, нужно развернуть ее локально другим способом.
+Если вдруг база данных не запустилась через докер, нужно развернуть ее локально любым другим способом.
+
+Тестовые данные для базы данных:
+```sql
+INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount)
+VALUES ('Борщ', 300, 'Традиционный русский суп с свеклой, картошкой, мясом и сметаной', 20, 20, 0, 0);
+
+INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount)
+VALUES ('Пельмени', 250, 'Пельмени из мяса с сочным бульоном, подается с сметаной и зеленью', 10, 25, 0, 0);
+
+INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount)
+VALUES ('Цезарь с креветками', 1200, 'Цезарь с креветками, романо-летуком, гренками и соусом', 15, 15, 0, 0);
+
+INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount)
+VALUES ('Сырники с вареньем', 350, 'Пышные сырники с джемом или вареньем на выбор', 10, 30, 0, 0);
+
+INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount)
+VALUES ('Шашлык из свинины', 1500, 'Ароматные шашлыки из свинины, подается с луком и соусом', 30, 20, 0, 0);
+
+INSERT INTO dishes (name, price, description, timeToCook, quantity, rating, ratingCount)
+VALUES ('Салат "Греческий"', 600, 'Салат с огурцом, помидорами, перцем, маслинами и фетой', 10, 10, 0, 0);
+```
 
 <h2>Функциональные требования</h2>
 > Система авторизации пользователей: Разработана система авторизации для двух типов пользователей:

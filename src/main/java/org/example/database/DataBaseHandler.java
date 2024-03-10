@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DataBaseHandler {
     private static volatile Connection connection = null;
-    private static final String DB_URL = "jdbc:mysql://localhost:3306";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/restaurant";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "root_password";
 

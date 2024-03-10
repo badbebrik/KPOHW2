@@ -59,14 +59,15 @@ public class VisitorMenu implements MenuI {
 
             Main.scanner.nextLine();
             switch (choice) {
-                case 1 -> createOrder();
-                case 2 -> showOrder();
+                case 1 -> showDishes();
+                case 2 -> createOrder();
                 case 3 -> addDishToActiveOrder();
-                case 4 -> showActiveOrdersStatus();
-                case 5 -> cancelOrder();
-                case 6 -> payForOrder();
-                case 7 -> makeOrder();
-                case 8 -> {
+                case 4 -> showOrder();
+                case 5 -> makeOrder();
+                case 6 -> showActiveOrdersStatus();
+                case 7 -> payForOrder();
+                case 8 -> cancelOrder();
+                case 9 -> {
                     return;
                 }
                 default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 8");

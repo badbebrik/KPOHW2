@@ -10,6 +10,4 @@ public interface ReviewRepository extends Iterable<Review> {
     int getReviewNumber();
 
     void update();
-
-    Iterator<Review> iterator();
 }
