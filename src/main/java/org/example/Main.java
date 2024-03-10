@@ -30,10 +30,6 @@ public class Main {
         AuthMenu authMenu = new AuthMenu(consoleView, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
         authMenu.run();
         kitchen.shutdown();
-        try {
-            DataBaseHandler.getConnectionInstance().close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DataBaseHandler.closeConnection();
     }
 }

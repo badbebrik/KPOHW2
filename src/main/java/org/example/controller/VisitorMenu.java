@@ -47,7 +47,6 @@ public class VisitorMenu implements MenuI {
 
     public void run() {
         while (true) {
-            activeOrder = orderRepo.getActiveOrderByUserId(currentUser.getId()); // если зазаз был приготовлен во время того как пользователь был не в системе
             showMenu();
             int choice;
             try {
@@ -175,6 +174,8 @@ public class VisitorMenu implements MenuI {
             System.out.println("У вас нет активных заказов");
             return;
         }
+
+        activeOrder = orderRepo.getActiveOrderByUserId(currentUser.getId());
 
         String status = "";
         switch (activeOrder.getStatus()) {

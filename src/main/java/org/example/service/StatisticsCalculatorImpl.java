@@ -41,7 +41,7 @@ public class StatisticsCalculatorImpl implements StatisticsCalculator {
                 mostPopularDishes.clear();
                 mostPopularDishes.add(dish);
                 maxRating = dish.getRating();
-            } else if (dish.getRating() == maxRating) {
+            } else if (dish.getRating() == maxRating && maxRating != 0) {
                 mostPopularDishes.add(dish);
             }
         }
