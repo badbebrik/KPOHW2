@@ -64,7 +64,7 @@ public class AuthMenu {
     }
 
     void login() {
-        System.out.println("Вход в систему:");
+        view.showMessageColored("Вход в систему", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите имя пользователя: ");
         String username = Main.scanner.nextLine();
         System.out.println("Введите пароль: ");
@@ -82,7 +82,7 @@ public class AuthMenu {
     }
 
     void register() {
-        System.out.println("Регистрация пользователя:");
+        view.showMessageColored("Регистрация", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите служебный ключ для регистрации в качестве администратора: ");
         String adminKey = Main.scanner.nextLine();
 
@@ -97,6 +97,7 @@ public class AuthMenu {
         String password = Main.scanner.nextLine();
 
         currentUser = new User(username, hashPassword(password), adminKey.equals("admin") ? UserRole.ADMIN : UserRole.VISITOR);
+        view.showRegistrationSuccess(username);
         DataBaseHandler.addUser(currentUser);
         currentUser = DataBaseHandler.getUser(username);
         MenuI menu = MenuFactory.createMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);

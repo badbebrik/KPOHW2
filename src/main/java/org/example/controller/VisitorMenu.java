@@ -239,7 +239,7 @@ public class VisitorMenu implements MenuI {
 
             System.out.println("Заказ успешно оплачен");
 
-            ReviewService reviewService = new ReviewService(activeOrder, reviewRepo, dishesMenu);
+            ReviewService reviewService = new ReviewService(activeOrder, reviewRepo, dishesMenu, view);
             reviewService.run();
         }
 

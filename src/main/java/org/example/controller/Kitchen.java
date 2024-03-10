@@ -18,6 +18,8 @@ public class Kitchen {
     private final LinkedBlockingQueue<Order> orderQueue;
 
     private final OrderRepo orderRepo;
+    private final int MILLIS_PER_SECOND = 1000;
+    private final int TIMEOUT = 60;
 
     public Kitchen(OrderRepo orderRepo) {
         this.orderRepo = orderRepo;
@@ -33,6 +35,7 @@ public class Kitchen {
 
     public void cancelOrder(Order order) {
         order.setCancelled(true);
+        removeOrder(order);
     }
 
     public void removeOrder(Order order) {
@@ -51,7 +54,7 @@ public class Kitchen {
         Runnable task = () -> {
             while (true) {
                 try {
-                    Order order = orderQueue.take(); // Блокирующая операция - ждем заказа
+                    Order order = orderQueue.take();
                     if (!order.getDishes().isEmpty()) {
                         chefPool.execute(() -> processOrder(order));
                     }
@@ -67,10 +70,6 @@ public class Kitchen {
 
     private void processOrder(Order order) {
         for (Dish dish : order.getDishes()) {
-            if (order.isCancelled()) {
-                System.out.println("Order with id " + order.getId() + " has been cancelled. Stopping preparation.");
-                return;
-            }
             prepareDish(dish);
         }
 
@@ -94,7 +93,7 @@ public class Kitchen {
 
     private void prepareDish(Dish dish) {
         try {
-            Thread.sleep(dish.getTimeToCook());
+            Thread.sleep(dish.getTimeToCook() * MILLIS_PER_SECOND);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -104,10 +103,10 @@ public class Kitchen {
     public void shutdown() {
         chefPool.shutdown();
         try {
-            if (!chefPool.awaitTermination(60, TimeUnit.MILLISECONDS)) {
+            if (!chefPool.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS)) {
                 chefPool.shutdownNow();
-                if (!chefPool.awaitTermination(60, TimeUnit.MILLISECONDS)) {
-                    System.err.println("Chef pool did not terminate");
+                if (!chefPool.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS)) {
+                    System.err.println("Повара не остановились");
                 }
             }
         } catch (InterruptedException e) {

@@ -73,7 +73,7 @@ public class AdminMenu implements MenuI {
             price = Main.scanner.nextInt();
             System.out.println("Введите количество блюда:");
             quantity = Main.scanner.nextInt();
-            System.out.println("Введите время приготовления блюда:");
+            System.out.println("Введите время приготовления блюда (в секундах):");
             cookingTime = Main.scanner.nextInt();
         } catch (Exception e) {
             view.showErrorMessage("Некорректный ввод");
@@ -135,4 +135,5 @@ public class AdminMenu implements MenuI {
 
         dishesMenu.setDishQuantity(id, quantity);
     }
+
 }

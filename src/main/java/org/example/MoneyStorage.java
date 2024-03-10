@@ -26,6 +26,7 @@ public class MoneyStorage implements MoneyStorageI {
         this.totalMoney += nonCash;
         updateMoneyStorage();
     }
+
     public int getTotalMoney() {
         return totalMoney;
     }

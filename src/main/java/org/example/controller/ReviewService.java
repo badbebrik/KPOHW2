@@ -1,10 +1,12 @@
 package org.example.controller;
 
+import org.example.ConsoleColors;
 import org.example.DishesMenu;
 import org.example.Main;
 import org.example.ReviewRepo;
 import org.example.model.Dish;
 import org.example.model.Order;
+import org.example.view.View;
 
 public class ReviewService {
 
@@ -12,10 +14,13 @@ public class ReviewService {
     ReviewRepo reviewRepo;
     DishesMenu dishesMenu;
 
-    public ReviewService(Order order, ReviewRepo reviewRepo, DishesMenu dishesMenu) {
+    View view;
+
+    public ReviewService(Order order, ReviewRepo reviewRepo, DishesMenu dishesMenu, View view) {
         this.order = order;
         this.reviewRepo = reviewRepo;
         this.dishesMenu = dishesMenu;
+        this.view = view;
     }
 
     public void run() {
@@ -30,7 +35,7 @@ public class ReviewService {
                 try {
                     rating = Main.scanner.nextInt();
                 } catch (Exception e) {
-                    System.out.println("Некорректный ввод. Введите число от 1 до 5");
+                    view.showErrorMessage("Некорректный ввод. Введите число от 1 до 5");
                     Main.scanner.nextLine();
                     i--;
                     continue;
@@ -43,7 +48,7 @@ public class ReviewService {
             }
             reviewRepo.addReview(order.getId(), review, order.getId());
             reviewRepo.update();
-            System.out.println("Спасибо за оставленный отзыв!");
+            view.showMessageColored("Спасибо за оставленный отзыв!", ConsoleColors.ANSI_GREEN);
         }
 
     }
