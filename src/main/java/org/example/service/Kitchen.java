@@ -1,9 +1,9 @@
-package org.example.controller;
+package org.example.service;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.example.OrderRepo;
+import org.example.repository.OrderRepositoryImpl;
 import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
@@ -17,11 +17,11 @@ public class Kitchen {
     private final ThreadPoolExecutor chefPool;
     private final LinkedBlockingQueue<Order> orderQueue;
 
-    private final OrderRepo orderRepo;
+    private final OrderRepositoryImpl orderRepo;
     private final int MILLIS_PER_SECOND = 1000;
     private final int TIMEOUT = 60;
 
-    public Kitchen(OrderRepo orderRepo) {
+    public Kitchen(OrderRepositoryImpl orderRepo) {
         this.orderRepo = orderRepo;
         orderQueue = new LinkedBlockingQueue<>();
         chefPool = new ThreadPoolExecutor(NUMBER_OF_CHEFS, NUMBER_OF_CHEFS, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());

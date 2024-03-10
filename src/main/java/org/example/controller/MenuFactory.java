@@ -1,15 +1,16 @@
-package org.example;
+package org.example.controller;
 
-import org.example.controller.AdminMenu;
-import org.example.controller.Kitchen;
-import org.example.controller.VisitorMenu;
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.MoneyStorageImpl;
+import org.example.repository.OrderRepositoryImpl;
+import org.example.repository.ReviewRepositoryImpl;
+import org.example.service.Kitchen;
 import org.example.model.User;
 import org.example.model.UserRole;
 import org.example.view.ConsoleView;
 
 public class MenuFactory {
-
-    public static MenuI createMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
+    public static MenuI createMenu(User user, ConsoleView view, DishesMenuRepositoryImpl dishesMenu, Kitchen kitchen, OrderRepositoryImpl orderRepo, MoneyStorageImpl moneyStorage, ReviewRepositoryImpl reviewRepo) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }

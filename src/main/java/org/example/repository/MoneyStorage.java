@@ -1,6 +1,6 @@
-package org.example;
+package org.example.repository;
 
-public interface MoneyStorageI {
+public interface MoneyStorage {
     void addCash(int cash);
 
     void addNonCash(int nonCash);

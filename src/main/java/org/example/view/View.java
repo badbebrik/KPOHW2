@@ -1,9 +1,8 @@
 package org.example.view;
 
-import org.example.DishesMenu;
-import org.example.MoneyStorage;
-import org.example.StatisticsCalculator;
-import org.example.model.Order;
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.MoneyStorageImpl;
+import org.example.service.StatisticsCalculator;
 
 public interface View {
 
@@ -17,14 +16,14 @@ public interface View {
 
     void showErrorMessage(String message);
 
-    void showMenuItemsAdmin(DishesMenu dishesMenu);
+    void showMenuItemsAdmin(DishesMenuRepositoryImpl dishesMenu);
 
-    void showMenuItemsVisitor(DishesMenu dishesMenu);
+    void showMenuItemsVisitor(DishesMenuRepositoryImpl dishesMenu);
 
 
     void showStatistics(StatisticsCalculator statisticsCalculator);
 
-    void showMoneyStorage(MoneyStorage moneyStorage);
+    void showMoneyStorage(MoneyStorageImpl moneyStorage);
 
     void showMessageColored(String option, String color);
 }

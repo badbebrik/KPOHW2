@@ -1,9 +1,10 @@
 package org.example.controller;
 
-import org.example.ConsoleColors;
-import org.example.DishesMenu;
+import org.example.model.Review;
+import org.example.view.ConsoleColors;
+import org.example.repository.DishesMenuRepositoryImpl;
 import org.example.Main;
-import org.example.ReviewRepo;
+import org.example.repository.ReviewRepositoryImpl;
 import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.view.View;
@@ -11,12 +12,12 @@ import org.example.view.View;
 public class ReviewService {
 
     private final Order order;
-    private final ReviewRepo reviewRepo;
-    private final DishesMenu dishesMenu;
+    private final ReviewRepositoryImpl reviewRepo;
+    private final DishesMenuRepositoryImpl dishesMenu;
 
     private final View view;
 
-    public ReviewService(Order order, ReviewRepo reviewRepo, DishesMenu dishesMenu, View view) {
+    public ReviewService(Order order, ReviewRepositoryImpl reviewRepo, DishesMenuRepositoryImpl dishesMenu, View view) {
         this.order = order;
         this.reviewRepo = reviewRepo;
         this.dishesMenu = dishesMenu;
@@ -46,7 +47,13 @@ public class ReviewService {
                 assessedDish.setRatingCount(assessedDish.getRatingCount() + 1);
                 dishesMenu.updateDishRating(assessedDish);
             }
-            reviewRepo.addReview(order.getId(), review, order.getId());
+
+            Review reviewToAdd = Review.builder()
+                    .review(review)
+                    .orderId(order.getId())
+                    .build();
+
+            reviewRepo.addReview(reviewToAdd);
             reviewRepo.update();
             view.showMessageColored("Спасибо за оставленный отзыв!", ConsoleColors.ANSI_GREEN);
         }

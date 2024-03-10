@@ -1,8 +1,15 @@
 package org.example.controller;
 
 import org.example.*;
+import org.example.database.DataBaseHandler;
 import org.example.model.User;
 import org.example.model.UserRole;
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.MoneyStorageImpl;
+import org.example.repository.OrderRepositoryImpl;
+import org.example.repository.ReviewRepositoryImpl;
+import org.example.service.Kitchen;
+import org.example.view.ConsoleColors;
 import org.example.view.ConsoleView;
 
 import java.security.MessageDigest;
@@ -10,14 +17,14 @@ import java.security.NoSuchAlgorithmException;
 
 public class AuthMenu {
     static User currentUser = null;
-    DishesMenu dishesMenu;
+    DishesMenuRepositoryImpl dishesMenu;
     Kitchen kitchen;
-    OrderRepo orderRepo;
-    MoneyStorage moneyStorage;
-    ReviewRepo reviewRepo;
+    OrderRepositoryImpl orderRepo;
+    MoneyStorageImpl moneyStorage;
+    ReviewRepositoryImpl reviewRepo;
     private final ConsoleView view;
 
-    public AuthMenu(ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
+    public AuthMenu(ConsoleView view, DishesMenuRepositoryImpl dishesMenu, Kitchen kitchen, OrderRepositoryImpl orderRepo, MoneyStorageImpl moneyStorage, ReviewRepositoryImpl reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
@@ -43,7 +50,7 @@ public class AuthMenu {
         return null;
     }
 
-    void showMenu() {
+    public void showMenu() {
         view.showAuthMenu();
     }
 
@@ -63,7 +70,7 @@ public class AuthMenu {
         }
     }
 
-    void login() {
+    private void login() {
         view.showMessageColored("Вход в систему", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите имя пользователя: ");
         String username = Main.scanner.nextLine();
@@ -78,10 +85,9 @@ public class AuthMenu {
         } else {
             view.showErrorMessage("Неверное имя пользователя или пароль");
         }
-
     }
 
-    void register() {
+    private void register() {
         view.showMessageColored("Регистрация", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите служебный ключ для регистрации в качестве администратора: ");
         String adminKey = Main.scanner.nextLine();

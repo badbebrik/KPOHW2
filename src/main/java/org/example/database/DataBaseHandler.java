@@ -1,4 +1,4 @@
-package org.example;
+package org.example.database;
 
 import com.google.gson.Gson;
 import org.example.model.*;
@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import com.google.gson.reflect.TypeToken;
+import org.example.repository.MoneyStorageImpl;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -257,7 +258,7 @@ public class DataBaseHandler {
     }
 
     // Для внесения изменений в кассу в базе
-    public static void updateMoneyStorage(MoneyStorage moneyStorage) {
+    public static void updateMoneyStorage(MoneyStorageImpl moneyStorage) {
         try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE moneyStorage SET cash = ?, nonCash = ?, total = cash + nonCash")) {
             preparedStatement.setInt(1, moneyStorage.getCash());
             preparedStatement.setInt(2, moneyStorage.getNonCash());

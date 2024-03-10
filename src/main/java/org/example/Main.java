@@ -1,7 +1,12 @@
 package org.example;
 
 import org.example.controller.AuthMenu;
-import org.example.controller.Kitchen;
+import org.example.database.DataBaseHandler;
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.MoneyStorageImpl;
+import org.example.repository.OrderRepositoryImpl;
+import org.example.repository.ReviewRepositoryImpl;
+import org.example.service.Kitchen;
 import org.example.view.ConsoleView;
 
 import java.sql.*;
@@ -20,11 +25,11 @@ public class Main {
             e.printStackTrace();
         }
 
-        DishesMenu dishesMenu = new DishesMenu();
-        OrderRepo orderRepo = new OrderRepo();
+        DishesMenuRepositoryImpl dishesMenu = new DishesMenuRepositoryImpl();
+        OrderRepositoryImpl orderRepo = new OrderRepositoryImpl();
         Kitchen kitchen = new Kitchen(orderRepo);
-        MoneyStorage moneyStorage = new MoneyStorage();
-        ReviewRepo reviewRepo = new ReviewRepo();
+        MoneyStorageImpl moneyStorage = new MoneyStorageImpl();
+        ReviewRepositoryImpl reviewRepo = new ReviewRepositoryImpl();
         AuthMenu authMenu = new AuthMenu(consoleView, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
         authMenu.run();
         kitchen.shutdown();

@@ -1,29 +1,26 @@
-package org.example;
+package org.example.repository;
 
-import org.example.model.Order;
+import org.example.database.DataBaseHandler;
 import org.example.model.Review;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class ReviewRepo implements Iterable<Review> {
+public class ReviewRepositoryImpl implements Iterable<Review>, ReviewRepository {
     List<Review> reviews;
 
-    public ReviewRepo() {
+    public ReviewRepositoryImpl() {
         reviews = DataBaseHandler.loadReviews();
     }
 
-    public void updateReview(Order activeOrder) {
-        DataBaseHandler.updateOrder(activeOrder);
-        update();
-    }
-
+    @Override
     public void update() {
         reviews = DataBaseHandler.loadReviews();
     }
 
-    public void addReview(int id, String review, int id1) {
-        DataBaseHandler.saveReview(Review.builder().id(id).review(review).orderId(id1).build());
+    @Override
+    public void addReview(Review review) {
+        DataBaseHandler.saveReview(review);
         update();
     }
 
@@ -46,6 +43,7 @@ public class ReviewRepo implements Iterable<Review> {
         }
     }
 
+    @Override
     public int getReviewNumber() {
         return reviews.size();
     }

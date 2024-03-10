@@ -1,15 +1,18 @@
-package org.example;
+package org.example.service;
 
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.OrderRepositoryImpl;
+import org.example.repository.ReviewRepositoryImpl;
 import org.example.model.Dish;
 
 import java.util.List;
 
 public class StatisticsCalculator {
-    private final OrderRepo orderRepo;
-    private final ReviewRepo reviewRepo;
-    private final DishesMenu dishesMenu;
+    private final OrderRepositoryImpl orderRepo;
+    private final ReviewRepositoryImpl reviewRepo;
+    private final DishesMenuRepositoryImpl dishesMenu;
 
-    public StatisticsCalculator(OrderRepo orderRepo, ReviewRepo reviewRepo, DishesMenu dishesMenu) {
+    public StatisticsCalculator(OrderRepositoryImpl orderRepo, ReviewRepositoryImpl reviewRepo, DishesMenuRepositoryImpl dishesMenu) {
         this.orderRepo = orderRepo;
         this.reviewRepo = reviewRepo;
         this.dishesMenu = dishesMenu;

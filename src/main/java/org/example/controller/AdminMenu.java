@@ -4,19 +4,25 @@ import lombok.Setter;
 import org.example.*;
 import org.example.model.Dish;
 import org.example.model.User;
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.MoneyStorageImpl;
+import org.example.repository.OrderRepositoryImpl;
+import org.example.repository.ReviewRepositoryImpl;
+import org.example.service.StatisticsCalculator;
+import org.example.view.ConsoleColors;
 import org.example.view.ConsoleView;
 
 public class AdminMenu implements MenuI {
 
     @Setter
     private User currentUser;
-    private final DishesMenu dishesMenu;
+    private final DishesMenuRepositoryImpl dishesMenu;
     private final ConsoleView view;
-    private final OrderRepo orderRepo;
-    private final ReviewRepo reviewRepo;
-    private final MoneyStorage moneyStorage;
+    private final OrderRepositoryImpl orderRepo;
+    private final ReviewRepositoryImpl reviewRepo;
+    private final MoneyStorageImpl moneyStorage;
 
-    public AdminMenu(User user, ConsoleView view, DishesMenu dishesMenu, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
+    public AdminMenu(User user, ConsoleView view, DishesMenuRepositoryImpl dishesMenu, OrderRepositoryImpl orderRepo, MoneyStorageImpl moneyStorage, ReviewRepositoryImpl reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.currentUser = user;
@@ -139,6 +145,11 @@ public class AdminMenu implements MenuI {
     }
 
     private void setTimeToCook() {
+        if (orderRepo.anyOrderIsInProgressOrNew()) {
+            view.showErrorMessage("Нельзя изменить время приготовления блюд, пока есть активные созданные или готовящиеся заказы");
+            return;
+        }
+
         view.showMessageColored("Изменение времени приготовления блюда:", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите id блюда:");
         int id;
@@ -156,6 +167,12 @@ public class AdminMenu implements MenuI {
     }
 
     private void setPrice() {
+
+        if (orderRepo.anyOrderIsInProgressOrNew()) {
+            view.showErrorMessage("Нельзя изменить цену блюд, пока есть активные созданные или готовящиеся заказы");
+            return;
+        }
+
         view.showMessageColored("Изменение цены блюда:", ConsoleColors.ANSI_BLUE);
         System.out.println("Введите id блюда:");
         int id, price;
@@ -167,7 +184,6 @@ public class AdminMenu implements MenuI {
             view.showErrorMessage("Некорректный ввод");
             return;
         }
-
         dishesMenu.setPrice(id, price);
     }
 

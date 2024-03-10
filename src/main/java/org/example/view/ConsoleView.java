@@ -1,9 +1,8 @@
 package org.example.view;
 
-import org.example.ConsoleColors;
-import org.example.DishesMenu;
-import org.example.MoneyStorage;
-import org.example.StatisticsCalculator;
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.MoneyStorageImpl;
+import org.example.service.StatisticsCalculator;
 
 public class ConsoleView implements View {
 
@@ -55,13 +54,13 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public void showMenuItemsAdmin(DishesMenu dishesMenu) {
+    public void showMenuItemsAdmin(DishesMenuRepositoryImpl dishesMenu) {
         showMessageColored("Меню Ресторана:", ConsoleColors.ANSI_BLUE);
         dishesMenu.forEach(System.out::println);
     }
 
     @Override
-    public void showMenuItemsVisitor(DishesMenu dishesMenu) {
+    public void showMenuItemsVisitor(DishesMenuRepositoryImpl dishesMenu) {
         showMessageColored("Меню Ресторана:", ConsoleColors.ANSI_BLUE);
         dishesMenu.forEach(dish -> System.out.println(dish.getId() + ". " +  dish.getName() + " (" + dish.getDescription() + ")" + " - " + dish.getPrice() + " руб." + " - Рейтинг: " + (dish.getRating() != 0 ?dish.getRating() + "/5" : "Нет оценок")));
     }
@@ -72,7 +71,7 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public void showMoneyStorage(MoneyStorage moneyStorage) {
+    public void showMoneyStorage(MoneyStorageImpl moneyStorage) {
         System.out.println(ConsoleColors.ANSI_BLUE + "Касса:" + ConsoleColors.ANSI_RESET);
         System.out.println("Наличные: " + moneyStorage.getCash());
         System.out.println("Безналичные: " + moneyStorage.getNonCash());

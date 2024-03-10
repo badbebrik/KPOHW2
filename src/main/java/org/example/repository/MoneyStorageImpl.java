@@ -1,14 +1,15 @@
-package org.example;
+package org.example.repository;
 
 import lombok.Data;
+import org.example.database.DataBaseHandler;
 
 @Data
-public class MoneyStorage implements MoneyStorageI {
+public class MoneyStorageImpl implements MoneyStorage {
     private int cash;
     private int nonCash;
     private int totalMoney;
 
-    public MoneyStorage() {
+    public MoneyStorageImpl() {
         this.cash = DataBaseHandler.getCash();
         this.nonCash = DataBaseHandler.getNonCash();
         this.totalMoney = cash + nonCash;

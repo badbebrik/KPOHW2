@@ -7,6 +7,12 @@ import org.example.model.Dish;
 import org.example.model.Order;
 import org.example.model.OrderStatus;
 import org.example.model.User;
+import org.example.repository.DishesMenuRepositoryImpl;
+import org.example.repository.MoneyStorageImpl;
+import org.example.repository.OrderRepositoryImpl;
+import org.example.repository.ReviewRepositoryImpl;
+import org.example.service.Kitchen;
+import org.example.view.ConsoleColors;
 import org.example.view.ConsoleView;
 
 public class VisitorMenu implements MenuI {
@@ -14,19 +20,19 @@ public class VisitorMenu implements MenuI {
     @Setter
     @Getter
     private User currentUser = null;
-    private final DishesMenu dishesMenu;
+    private final DishesMenuRepositoryImpl dishesMenu;
     private final Kitchen kitchen;
-    private final OrderRepo orderRepo;
+    private final OrderRepositoryImpl orderRepo;
     private Order activeOrder;
     private final ConsoleView view;
 
-    private final MoneyStorage moneyStorage;
+    private final MoneyStorageImpl moneyStorage;
 
 
-    private final ReviewRepo reviewRepo;
+    private final ReviewRepositoryImpl reviewRepo;
 
 
-    public VisitorMenu(User user, ConsoleView view, DishesMenu dishesMenu, Kitchen kitchen, OrderRepo orderRepo, MoneyStorage moneyStorage, ReviewRepo reviewRepo) {
+    public VisitorMenu(User user, ConsoleView view, DishesMenuRepositoryImpl dishesMenu, Kitchen kitchen, OrderRepositoryImpl orderRepo, MoneyStorageImpl moneyStorage, ReviewRepositoryImpl reviewRepo) {
         this.view = view;
         this.dishesMenu = dishesMenu;
         this.kitchen = kitchen;
@@ -105,7 +111,7 @@ public class VisitorMenu implements MenuI {
 
         System.out.println("Ваш заказ:");
         for (Dish dish : activeOrder.getDishes()) {
-            System.out.println("Блюдо: " + dish.getName() + " Цена: " + dish.getPrice() + " Время приготовления: " + dish.getTimeToCook() + "мин");
+            System.out.println("Блюдо: " + dish.getName() + " Цена: " + dish.getPrice());
         }
     }
 

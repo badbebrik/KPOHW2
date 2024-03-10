@@ -1,4 +1,4 @@
-package org.example;
+package org.example.view;
 
 public class ConsoleColors {
     public static final String ANSI_RESET = "\u001B[0m";
