@@ -38,11 +38,11 @@ public class Kitchen {
         removeOrder(order);
     }
 
-    public void removeOrder(Order order) {
+    private void removeOrder(Order order) {
         orderQueue.remove(order);
     }
 
-    public void fillOrderQueue() {
+    private void fillOrderQueue() {
         for (Order order : orderRepo) {
             if (order.getStatus() == OrderStatus.IN_PROGRESS) {
                 orderQueue.add(order);

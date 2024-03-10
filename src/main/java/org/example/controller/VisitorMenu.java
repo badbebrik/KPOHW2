@@ -85,11 +85,11 @@ public class VisitorMenu implements MenuI {
         activeOrder = new Order();
         activeOrder.setUserId(currentUser.getId());
         orderRepo.addOrder(activeOrder);
-        loadOrder();
+        activeOrder = orderRepo.getActiveOrderByUserId(currentUser.getId());
     }
 
     private void showDishes() {
-        dishesMenu.showDishes();
+        view.showMenuItemsVisitor(dishesMenu);
     }
 
     private void showOrder() {
@@ -244,12 +244,8 @@ public class VisitorMenu implements MenuI {
         }
 
         activeOrder.setStatus(OrderStatus.PAID);
-        updateMoneyStorage();
-        orderRepo.updateOrder(activeOrder);
-    }
-
-    private void updateMoneyStorage() {
         moneyStorage.updateMoneyStorage();
+        orderRepo.updateOrder(activeOrder);
     }
 
     private void makeOrder() {
@@ -271,9 +267,5 @@ public class VisitorMenu implements MenuI {
         } else {
             view.showErrorMessage("Невозможно оформить заказ");
         }
-    }
-
-    private void loadOrder() {
-        activeOrder = orderRepo.getActiveOrderByUserId(currentUser.getId());
     }
 }

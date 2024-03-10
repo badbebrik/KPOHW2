@@ -76,7 +76,7 @@ public class AuthMenu {
             MenuI menu = MenuFactory.createMenu(currentUser, view, dishesMenu, kitchen, orderRepo, moneyStorage, reviewRepo);
             menu.run();
         } else {
-            System.out.println("Неверное имя пользователя или пароль");
+            view.showErrorMessage("Неверное имя пользователя или пароль");
         }
 
     }
@@ -89,7 +89,7 @@ public class AuthMenu {
         System.out.println("Введите имя пользователя: ");
         String username = Main.scanner.nextLine();
         if (DataBaseHandler.getUser(username) != null) {
-            System.out.println("Пользователь с таким именем уже существует");
+            view.showErrorMessage("Пользователь с таким именем уже существует");
             return;
         }
 

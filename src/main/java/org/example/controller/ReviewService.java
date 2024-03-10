@@ -10,11 +10,11 @@ import org.example.view.View;
 
 public class ReviewService {
 
-    Order order;
-    ReviewRepo reviewRepo;
-    DishesMenu dishesMenu;
+    private final Order order;
+    private final ReviewRepo reviewRepo;
+    private final DishesMenu dishesMenu;
 
-    View view;
+    private final View view;
 
     public ReviewService(Order order, ReviewRepo reviewRepo, DishesMenu dishesMenu, View view) {
         this.order = order;

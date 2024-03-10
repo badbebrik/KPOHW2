@@ -23,7 +23,6 @@ public class Order {
         dishes = new ArrayList<>();
         status = OrderStatus.NEW;
     }
-
     public void addDish(Dish dish) {
         dishes.add(dish);
     }

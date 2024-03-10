@@ -16,18 +16,10 @@ public class Dish {
     private double rating;
     private int ratingCount;
 
-    public Dish(String name, String description, int price, int quantity, long cookingTime) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.quantity = quantity;
-        this.timeToCook = cookingTime;
-    }
-
     @Override
     public String toString() {
         return "id = " + id + ", Название = " + name + ", Цена = " + price + ", Количество = " + quantity +
-                ", Время приготовления = " + timeToCook / 1000 + " секунд, " +
+                ", Время приготовления = " + timeToCook + " секунд, " +
                 "Рейтинг = " + (rating == 0 ? "нет оценок" : rating + "/5");
     }
 }

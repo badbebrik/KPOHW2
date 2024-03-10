@@ -42,12 +42,14 @@ public class AdminMenu implements MenuI {
                 case 3 -> showDishes();
                 case 4 -> showStatistics();
                 case 5 -> setDishQuantity();
-                case 6 -> showMoneyStorage();
-                case 7 -> showReviews();
-                case 8 -> {
+                case 6 -> setTimeToCook();
+                case 7 -> setPrice();
+                case 8 -> showMoneyStorage();
+                case 9 -> showReviews();
+                case 10 -> {
                     return;
                 }
-                default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 8");
+                default -> view.showErrorMessage("Некорректный ввод. Введите число от 1 до 10");
             }
         }
     }
@@ -112,7 +114,7 @@ public class AdminMenu implements MenuI {
     }
 
     private void showDishes() {
-        view.showMenuItems(dishesMenu);
+        view.showMenuItemsAdmin(dishesMenu);
     }
 
     private void showStatistics() {
@@ -134,6 +136,39 @@ public class AdminMenu implements MenuI {
         }
 
         dishesMenu.setDishQuantity(id, quantity);
+    }
+
+    private void setTimeToCook() {
+        view.showMessageColored("Изменение времени приготовления блюда:", ConsoleColors.ANSI_BLUE);
+        System.out.println("Введите id блюда:");
+        int id;
+        long time;
+        try {
+            id = Main.scanner.nextInt();
+            System.out.println("Введите время приготовления (в секундах):");
+            time = Main.scanner.nextLong();
+        } catch (Exception e) {
+            view.showErrorMessage("Некорректный ввод");
+            return;
+        }
+
+        dishesMenu.setTimeToCook(id, time);
+    }
+
+    private void setPrice() {
+        view.showMessageColored("Изменение цены блюда:", ConsoleColors.ANSI_BLUE);
+        System.out.println("Введите id блюда:");
+        int id, price;
+        try {
+            id = Main.scanner.nextInt();
+            System.out.println("Введите цену:");
+            price = Main.scanner.nextInt();
+        } catch (Exception e) {
+            view.showErrorMessage("Некорректный ввод");
+            return;
+        }
+
+        dishesMenu.setPrice(id, price);
     }
 
 }

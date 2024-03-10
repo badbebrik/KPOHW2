@@ -305,4 +305,24 @@ public class DataBaseHandler {
             e.printStackTrace();
         }
     }
+
+    public static void setTimeToCook(int id, long time) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE dishes SET timeToCook = ? WHERE id = ?")) {
+            preparedStatement.setLong(1, time);
+            preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setPrice(int id, int price) {
+        try (PreparedStatement preparedStatement = getConnectionInstance().prepareStatement("UPDATE dishes SET price = ? WHERE id = ?")) {
+            preparedStatement.setInt(1, price);
+            preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

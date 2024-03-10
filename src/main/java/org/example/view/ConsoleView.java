@@ -4,7 +4,6 @@ import org.example.ConsoleColors;
 import org.example.DishesMenu;
 import org.example.MoneyStorage;
 import org.example.StatisticsCalculator;
-import org.example.model.Order;
 
 public class ConsoleView implements View {
 
@@ -29,9 +28,11 @@ public class ConsoleView implements View {
         System.out.println("3. Показать меню");
         System.out.println("4. Статистика");
         System.out.println("5. Установить количество блюдa");
-        System.out.println("6. Показать кассу");
-        System.out.println("7. Показать отзывы");
-        System.out.println("8. Выход");
+        System.out.println("6. Установить время приготовления");
+        System.out.println("7. Установить цену");
+        System.out.println("8. Показать кассу");
+        System.out.println("9. Показать отзывы");
+        System.out.println("10. Выход");
     }
 
     @Override
@@ -54,9 +55,15 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public void showMenuItems(DishesMenu dishesMenu) {
+    public void showMenuItemsAdmin(DishesMenu dishesMenu) {
         showMessageColored("Меню Ресторана:", ConsoleColors.ANSI_BLUE);
-        dishesMenu.forEach(dish -> System.out.println(dish.getName() + " Цена: " + dish.getPrice() + " Доступное количество: " + dish.getQuantity()));
+        dishesMenu.forEach(System.out::println);
+    }
+
+    @Override
+    public void showMenuItemsVisitor(DishesMenu dishesMenu) {
+        showMessageColored("Меню Ресторана:", ConsoleColors.ANSI_BLUE);
+        dishesMenu.forEach(dish -> System.out.println(dish.getId() + ". " +  dish.getName() + " (" + dish.getDescription() + ")" + " - " + dish.getPrice() + " руб." + " - Рейтинг: " + (dish.getRating() != 0 ?dish.getRating() + "/5" : "Нет оценок")));
     }
 
     @Override

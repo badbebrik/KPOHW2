@@ -72,6 +72,16 @@ public class DishesMenu implements Iterable<Dish> {
         return new DishesIterator();
     }
 
+    public void setTimeToCook(int id, long time) {
+        DataBaseHandler.setTimeToCook(id, time);
+        update();
+    }
+
+    public void setPrice(int id, int price) {
+        DataBaseHandler.setPrice(id, price);
+        update();
+    }
+
     private class DishesIterator implements Iterator<Dish> {
         private int currentIndex = 0;
 

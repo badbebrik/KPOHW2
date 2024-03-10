@@ -17,7 +17,9 @@ public interface View {
 
     void showErrorMessage(String message);
 
-    void showMenuItems(DishesMenu dishesMenu);
+    void showMenuItemsAdmin(DishesMenu dishesMenu);
+
+    void showMenuItemsVisitor(DishesMenu dishesMenu);
 
 
     void showStatistics(StatisticsCalculator statisticsCalculator);
